@@ -17,6 +17,8 @@ package org.ssutt.platform.communicator;
 
 import org.ssutt.core.dm.SSUDataManager;
 import org.ssutt.core.dm.TTDataManager;
+import org.ssutt.core.dm.entities.TableEntity;
+import org.ssutt.core.sql.ex.EmptyTableException;
 import org.ssutt.core.sql.ex.NoSuchDepartmentException;
 import org.ssutt.core.sql.ex.NoSuchGroupException;
 import org.ssutt.platform.json.JSONHandler;
@@ -137,5 +139,18 @@ public class DataCommunicator {
         return  result;
     }
 
-
+    public String getTT(int groupID) {
+        String result = "";
+        try {
+            TableEntity raw = dm.getTT(groupID);
+            result = jsh.getTT(raw);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoSuchGroupException e) {
+            e.printStackTrace();
+        } catch (EmptyTableException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

@@ -17,6 +17,7 @@
 package org.ssutt.platform.json;
 
 import com.google.gson.Gson;
+import org.ssutt.core.dm.entities.TableEntity;
 import org.ssutt.platform.json.entities.DepartmentEntity;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class JSONHandler {
 
     public String convertDepartmentsMap(Map<String, String> departments) {
         Collection result = new ArrayList();
-        for (String key : new TreeSet<String>(departments.keySet())) {
+        for (String key : new TreeSet<>(departments.keySet())) {
             result.add(new DepartmentEntity(key, departments.get(key)));
         }
         return gson.toJson(result);
@@ -41,6 +42,18 @@ public class JSONHandler {
 
     public String converGroupNames(int id){
         return gson.toJson(id);
+    }
+
+    public String getTT(TableEntity te) {
+        Collection result = new ArrayList();
+
+        String[][] even = te.getEvenTable();
+        String[][] odd = te.getOddTable();
+
+        result.add(even);
+        result.add(odd);
+
+        return gson.toJson(result);
     }
 
 }
