@@ -17,7 +17,7 @@ package org.ssutt.platform.testing;
 
 
 import org.junit.Test;
-import org.ssutt.platform.communicator.DataCommunicator;
+import org.ssutt.platform.communicator.TTDataCommunicator;
 
 import java.sql.SQLException;
 
@@ -25,12 +25,13 @@ public class MainTest {
     @Test
     public void TestDC() throws ClassNotFoundException, SQLException {
 
-        DataCommunicator dc = new DataCommunicator();
+        TTDataCommunicator dc = new TTDataCommunicator();
 
         System.out.println(dc.getDepartments());
         System.out.println(dc.getGroupNames("knt"));
-        System.out.println(dc.getGroupNames("sf"));
-        System.out.println(dc.getTT(Integer.parseInt(dc.getGroupID("knt","151"))));
+        System.out.println(dc.testFailure());
+        //System.out.println(dc.getGroupNames("sf"));
+        //System.out.println(dc.getTT(Integer.parseInt(dc.getGroupID("knt","151"))));
 
 
     }

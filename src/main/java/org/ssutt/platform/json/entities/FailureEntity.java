@@ -16,23 +16,12 @@
 
 package org.ssutt.platform.json.entities;
 
-import java.util.Map;
+public class FailureEntity {
+    private String module;
+    private String message;
 
-public class DepartmentEntity {
-    private String tag;
-    private Map<String, String> data;
-
-    public DepartmentEntity(String tag, Map<String, String> data) {
-        this.tag = tag;
-        this.data = data;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public Map<String, String> getData() {
-        return data;
+    public FailureEntity(String module, String message) {
+        this.message = message;
+        this.module = module;
     }
 }
-

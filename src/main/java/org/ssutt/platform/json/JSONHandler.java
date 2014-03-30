@@ -17,43 +17,43 @@
 package org.ssutt.platform.json;
 
 import com.google.gson.Gson;
-import org.ssutt.core.dm.entities.TableEntity;
+import com.google.gson.GsonBuilder;
 import org.ssutt.platform.json.entities.DepartmentEntity;
+import org.ssutt.platform.json.entities.FailureEntity;
+import org.ssutt.platform.json.serializers.DepartmentSerializer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class JSONHandler {
     private static Gson gson;
     public JSONHandler() {
         gson = new Gson();
+
     }
 
-    public String convertDepartmentsMap(Map<String, String> departments) {
-        Collection result = new ArrayList();
-        for (String key : new TreeSet<>(departments.keySet())) {
-            result.add(new DepartmentEntity(key, departments.get(key)));
-        }
-        return gson.toJson(result);
+    public String convertDepartmentList(Map<String, Map<String, String>> departments) {
+        GsonBuilder gsb = new GsonBuilder();
+        gsb.registerTypeAdapter(DepartmentEntity.class, new DepartmentSerializer());
+
+        return gsb.create().toJson(departments);
     }
 
     public String getGroupNames(List<String> names) {
        return gson.toJson(names);
     }
 
-    public String converGroupNames(int id){
+    public String convertGroupNames(int id){
         return gson.toJson(id);
     }
 
-    public String getTT(TableEntity te) {
-        Collection result = new ArrayList();
+    public String getTT() {
 
-        String[][] even = te.getEvenTable();
-        String[][] odd = te.getOddTable();
+        return null;
+    }
 
-        result.add(even);
-        result.add(odd);
-
-        return gson.toJson(result);
+    public String getFailure(String module, String msg) {
+        return gson.toJson(new FailureEntity(module, msg));
     }
 
 }

@@ -14,25 +14,7 @@
  * limitations under the License.
  */
 
-package org.ssutt.platform.json.entities;
+package org.ssutt.platform.json.serializers;
 
-import java.util.Map;
-
-public class DepartmentEntity {
-    private String tag;
-    private Map<String, String> data;
-
-    public DepartmentEntity(String tag, Map<String, String> data) {
-        this.tag = tag;
-        this.data = data;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public Map<String, String> getData() {
-        return data;
-    }
+public class TimeTableSerializer {
 }
-
