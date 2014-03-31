@@ -16,19 +16,19 @@
 
 package org.ssutt.platform.communicator;
 
-import org.ssutt.core.dm.TTDataManager;
+import org.ssutt.core.dm.SSUDataManager;
 import org.ssutt.platform.json.JSONHandler;
 
 public class CommunicationPool {
     private static CommunicationPool cp;
 
-    private static TTDataManager dm;
+    private static SSUDataManager dm;
     private static JSONHandler jsh;
     private CommunicationPool() {
 
     }
 
-    public static void setDataManager(TTDataManager dm) {
+    public static void setDataManager(SSUDataManager dm) {
         CommunicationPool.dm = dm;
     }
 

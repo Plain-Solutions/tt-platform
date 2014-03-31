@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class TTDataCommunicator {
 
-   private static TTDataManager dm;
+    private static TTDataManager dm;
     private static JSONHandler jsh;
 
     public TTDataCommunicator(TTDataManager dm, JSONHandler jsh) {
@@ -40,7 +40,7 @@ public class TTDataCommunicator {
         try {
             dm.putDepartments();
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(),e.getMessage());
+            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getMessage()));
         }
     }
 
@@ -48,9 +48,9 @@ public class TTDataCommunicator {
         try {
             dm.putDepartmentGroups(departmentTag);
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getMessage()));
         } catch (NoSuchDepartmentException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), e.getMessage()));
         }
     }
 
@@ -58,76 +58,72 @@ public class TTDataCommunicator {
         try {
             dm.putAllGroups();
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(),e.getMessage());
+            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getMessage()));
         } catch (NoSuchDepartmentException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), e.getMessage()));
         }
     }
 
     public void putTT(String departmentTag, int groupID) {
-
         try {
             dm.putTT(departmentTag, groupID);
         } catch (IOException e) {
-            jsh.getFailure(Module.IO.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.IO.name(), e.getMessage()));
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(),e.getMessage());
-        } catch (NoSuchDepartmentException | NoSuchGroupException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getMessage()));
+        } catch (NoSuchDepartmentException e) {
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such Department"));
+        } catch (NoSuchGroupException e) {
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such Group"));
         }
 
     }
 
     public String getDepartments() {
-        String result = "";
         try {
             Map<String, Map<String, String>> raw = dm.getDepartments();
-            result = jsh.convertDepartmentList(raw);
+            return jsh.convertDepartmentList(raw);
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
+            return jsh.getFailure(Module.GENSQL.name(), e.getSQLState());
         }
-        return result;
     }
 
 
     public String getGroupNames(String departmentTag) {
-        String result = "";
         try {
             List<String> raw = dm.getGroups(departmentTag);
-            result = jsh.getGroupNames(raw);
+            return jsh.getGroupNames(raw);
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
+            return jsh.getFailure(Module.GENSQL.name(), e.getSQLState());
         } catch (NoSuchDepartmentException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            return jsh.getFailure(Module.TTSQL.name(), "No department found");
         }
-
-        return result;
     }
 
     public String getGroupID(String departmentTag, String groupName) {
-        String result = "";
         try {
             int raw = dm.getGroupID(departmentTag, groupName);
-            result = jsh.convertGroupNames(raw);
+            return jsh.convertGroupNames(raw);
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(),e.getMessage());
-        } catch (NoSuchGroupException | NoSuchDepartmentException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            return jsh.getFailure(Module.GENSQL.name(), e.getSQLState());
+        } catch (NoSuchDepartmentException e) {
+            return jsh.getFailure(Module.TTSQL.name(), "No such Department");
+        } catch (NoSuchGroupException e) {
+            return jsh.getFailure(Module.TTSQL.name(), "No such Group");
         }
-        return  result;
     }
 
     public String getTT(int groupID) {
-        String result = "";
         try {
             List<String[]> raw = dm.getTT(groupID);
-            result = jsh.convertTT(raw);
+            return jsh.convertTT(raw);
         } catch (SQLException e) {
-            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
-        } catch (NoSuchGroupException | EmptyTableException e ) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
+            return jsh.getFailure(Module.GENSQL.name(), e.getSQLState());
+        } catch (NoSuchGroupException e) {
+            return jsh.getFailure(Module.TTSQL.name(), "No such Group");
+        } catch (EmptyTableException e) {
+            return jsh.getFailure(Module.TTSQL.name(), "No info about this group. The Table is empty");
         }
-        return result;
     }
 
 

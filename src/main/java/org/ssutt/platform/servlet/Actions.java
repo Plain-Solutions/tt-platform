@@ -42,8 +42,8 @@ public class Actions implements SparkApplication {
             @Override
             public Object handle(Request request, Response response) {
                 TTDataCommunicator dc = cp.getDCinstance();
-                System.out.println(request.params(":tag"));
-                return dc.getGroupNames(                   request.params(":tag"));
+                System.out.println(dc.getGroupNames(request.params(":tag")));
+                return dc.getGroupNames(request.params(":tag"));
             }
         });
 
