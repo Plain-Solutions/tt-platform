@@ -23,6 +23,7 @@ import org.ssutt.core.sql.H2Queries;
 import org.ssutt.core.sql.SSUSQLManager;
 import org.ssutt.core.sql.ex.NoSuchDepartmentException;
 import org.ssutt.core.sql.ex.NoSuchGroupException;
+import org.ssutt.platform.communicator.CommunicationPool;
 import org.ssutt.platform.communicator.Module;
 import org.ssutt.platform.json.JSONHandler;
 
@@ -39,28 +40,27 @@ public class TomcatInit implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        TTDataManager dm = new SSUDataManager();
-        dm.deliverDataFetcherProvider(new SSUDataFetcher());
-
         JSONHandler jsh = new JSONHandler();
-
-      //  try {
-        Context initContext = null;
         try {
-            initContext = new InitialContext();
-            DataSource ds  = (DataSource) initContext.lookup("java:/comp/env/jdbc/ttDS");
+            Context initContext = new InitialContext();
+            DataSource ds = (DataSource) initContext.lookup("java:/comp/env/jdbc/ttDS");
 
+            TTDataManager dm = new SSUDataManager();
             dm.deliverDBProvider(new SSUSQLManager(ds.getConnection()), new H2Queries());
+            dm.deliverDataFetcherProvider(new SSUDataFetcher());
+
+            //for access to initialized Manager outside servlets
+            CommunicationPool cp = CommunicationPool.getInstance();
+            CommunicationPool.setDataManager(dm);
+            CommunicationPool.setJSONHandler(jsh);
             dm.putDepartments();
             dm.putAllGroups();
-            for (String d: dm.getDepartmentTags())
-                for (String gr: dm.getGroups(d)) {
+            for (String d : dm.getDepartmentTags())
+                for (String gr : dm.getGroups(d)) {
                     dm.putTT(d, dm.getGroupID(d, gr));
                 }
-
-
-    } catch (SQLException | NamingException e) {
-            jsh.getFailure(Module.GENSQL.name(),e.getMessage());
+        } catch (SQLException | NamingException e) {
+            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
         } catch (NoSuchDepartmentException | NoSuchGroupException e) {
             jsh.getFailure(Module.TTSQL.name(), e.getMessage());
         } catch (IOException e) {

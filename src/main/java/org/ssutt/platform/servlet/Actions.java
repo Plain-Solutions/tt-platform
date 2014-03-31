@@ -13,8 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.ssutt.platform.servlet;
 
-public class Actions {
+import org.ssutt.platform.communicator.CommunicationPool;
+import org.ssutt.platform.communicator.TTDataCommunicator;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.servlet.SparkApplication;
+
+import static spark.Spark.get;
+
+public class Actions implements SparkApplication {
+    @Override
+    public void init() {
+        final CommunicationPool cp = CommunicationPool.getInstance();
+        get(new Route("/department/:tag/group/:name") {
+            @Override
+            public Object handle(Request request, Response response) {
+                TTDataCommunicator dc = cp.getDCinstance();
+                return dc.getTT(Integer.parseInt(
+                        dc.getGroupID(
+                                request.params(":tag"), request.params(":name"))
+                ));
+            }
+        });
+        get(new Route("/department/:tag/groups") {
+            @Override
+            public Object handle(Request request, Response response) {
+                TTDataCommunicator dc = cp.getDCinstance();
+                System.out.println(request.params(":tag"));
+                return dc.getGroupNames(                   request.params(":tag"));
+            }
+        });
+
+
+        get(new Route("/departments") {
+            @Override
+            public Object handle(Request request, Response response) {
+                TTDataCommunicator dc = cp.getDCinstance();
+                return dc.getDepartments();
+            }
+        });
+
+
+    }
 }

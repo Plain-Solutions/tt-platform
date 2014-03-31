@@ -28,11 +28,11 @@ import java.util.Map;
 
 public class TTDataCommunicator {
 
-   private TTDataManager dm;
-    private JSONHandler jsh;
+   private static TTDataManager dm;
+    private static JSONHandler jsh;
 
     public TTDataCommunicator(TTDataManager dm, JSONHandler jsh) {
-        this.dm = dm;
+        TTDataCommunicator.dm = dm;
         this.jsh = jsh;
     }
 
@@ -89,10 +89,6 @@ public class TTDataCommunicator {
         return result;
     }
 
-    public String testFailure(){
-        return jsh.getFailure(Module.TTSQL.name(), "test message of TTSQLManager/DB failure");
-    }
-
 
     public String getGroupNames(String departmentTag) {
         String result = "";
@@ -121,7 +117,7 @@ public class TTDataCommunicator {
         return  result;
     }
 
-    public String convertTT(int groupID) {
+    public String getTT(int groupID) {
         String result = "";
         try {
             List<String[]> raw = dm.getTT(groupID);

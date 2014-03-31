@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="tt-platform:war exploded">
-    <output-path>$PROJECT_DIR$/target/tt-platform</output-path>
+    <output-path>$PROJECT_DIR$/target/api</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="tt-platform/web/Web" />
       <element id="directory" name="WEB-INF">

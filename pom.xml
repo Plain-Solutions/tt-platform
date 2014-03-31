@@ -125,6 +125,6 @@
             </plugin>
 
         </plugins>
-        <finalName>tt-platform</finalName>
+        <finalName>api</finalName>
     </build>
 </project>
