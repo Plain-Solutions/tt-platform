@@ -32,10 +32,16 @@ public class Actions implements SparkApplication {
             @Override
             public Object handle(Request request, Response response) {
                 TTDataCommunicator dc = cp.getDCinstance();
-                return dc.getTT(Integer.parseInt(
+
+                String result =  dc.getTT(Integer.parseInt(
                         dc.getGroupID(
                                 request.params(":tag"), request.params(":name"))
                 ));
+                if (result.contains("error"))
+                    response.status(404);
+                else
+                    response.status(200);
+                return result;
             }
         });
         get(new Route("/department/:tag/groups") {
@@ -43,7 +49,13 @@ public class Actions implements SparkApplication {
             public Object handle(Request request, Response response) {
                 TTDataCommunicator dc = cp.getDCinstance();
                 System.out.println(dc.getGroupNames(request.params(":tag")));
-                return dc.getGroupNames(request.params(":tag"));
+                String result = dc.getGroupNames(request.params(":tag"));
+
+                if (result.contains("error"))
+                    response.status(404);
+                else
+                    response.status(200);
+                return result;
             }
         });
 
@@ -52,7 +64,12 @@ public class Actions implements SparkApplication {
             @Override
             public Object handle(Request request, Response response) {
                 TTDataCommunicator dc = cp.getDCinstance();
-                return dc.getDepartments();
+                String result = dc.getDepartments();
+                if (result.contains("error"))
+                    response.status(404);
+                else
+                    response.status(200);
+                return result;
             }
         });
 

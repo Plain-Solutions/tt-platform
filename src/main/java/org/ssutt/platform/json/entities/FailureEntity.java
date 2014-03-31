@@ -17,11 +17,11 @@
 package org.ssutt.platform.json.entities;
 
 public class FailureEntity {
-    private String module;
+    private String error;
     private String message;
 
-    public FailureEntity(String module, String message) {
+    public FailureEntity(String error, String message) {
         this.message = message;
-        this.module = module;
+        this.error = error;
     }
 }

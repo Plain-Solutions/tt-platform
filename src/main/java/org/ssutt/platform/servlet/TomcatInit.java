@@ -21,6 +21,7 @@ import org.ssutt.core.fetch.SSUDataFetcher;
 import org.ssutt.core.sql.H2Queries;
 import org.ssutt.core.sql.SSUSQLManager;
 import org.ssutt.core.sql.ex.NoSuchDepartmentException;
+import org.ssutt.core.sql.ex.NoSuchGroupException;
 import org.ssutt.platform.communicator.CommunicationPool;
 import org.ssutt.platform.communicator.Module;
 import org.ssutt.platform.json.JSONHandler;
@@ -31,6 +32,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class TomcatInit implements ServletContextListener {
@@ -52,16 +54,18 @@ public class TomcatInit implements ServletContextListener {
             CommunicationPool.setJSONHandler(jsh);
             dm.putDepartments();
             dm.putAllGroups();
-//            for (String d : dm.getDepartmentTags())
-//                for (String gr : dm.getGroups(d)) {
-//                    dm.putTT(d, dm.getGroupID(d, gr));
-//                }
+            for (String d : dm.getDepartmentTags())
+                for (String gr : dm.getGroups(d)) {
+                    dm.putTT(d, dm.getGroupID(d, gr));
+                }
         } catch (SQLException | NamingException e) {
-            jsh.getFailure(Module.GENSQL.name(), e.getMessage());
-        } catch (NoSuchDepartmentException e) { // | NoSuchGroupException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
-        //} catch (IOException e) {
-          //  jsh.getFailure(Module.IO.name(), e.getMessage());
+            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getCause().toString()));
+        } catch (NoSuchDepartmentException e) {
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such department"));
+        } catch (IOException e) {
+            System.out.println(jsh.getFailure(Module.IO.name(), e.getMessage()));
+        } catch (NoSuchGroupException e) {
+            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such group"));
         }
 
     }
