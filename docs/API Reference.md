@@ -37,7 +37,7 @@ Response in case of success:
 ---
 ### [GET] /api/1/< department_tag >/groups
 
-Get list of group numbers for selected department.
+Get list of group names for selected department.
 
 **String group names now are supported**
 
@@ -58,7 +58,7 @@ Response in case of success:
 ---
 ### [GET] /api/1/department/< department_tag >/group/< group_name >
 
-Get timetable of group from department. Results are sorted by days, then by sequence of lessons, and finally (should be, not checked) by parity: **even > odd**, see second example. 
+Get timetable of group from department. Results are sorted by days, then by sequence of lessons, and finally (should be, not checked) by parity: **even < odd**, see second example. 
 
 Status code:
 
