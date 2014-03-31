@@ -15,77 +15,25 @@
  */
 package org.ssutt.platform.communicator;
 
-import org.ssutt.core.dm.SSUDataManager;
 import org.ssutt.core.dm.TTDataManager;
-import org.ssutt.core.fetch.SSUDataFetcher;
-import org.ssutt.core.sql.H2Queries;
-import org.ssutt.core.sql.SSUSQLManager;
 import org.ssutt.core.sql.ex.EmptyTableException;
 import org.ssutt.core.sql.ex.NoSuchDepartmentException;
 import org.ssutt.core.sql.ex.NoSuchGroupException;
 import org.ssutt.platform.json.JSONHandler;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 public class TTDataCommunicator {
-    public enum Module {
-        GENSQL("SQL"),
-        TTSQL("SSUSQLManager/Database"),
-        DF("SSUDataFetcher"),
-        IO("Input/Output");
-
-        private final String name;
-        Module (String name) {
-            this.name = name;
-        }
-    }
 
    private TTDataManager dm;
     private JSONHandler jsh;
 
-    public TTDataCommunicator() {
-        dm = new SSUDataManager();
-
-        dm.deliverDataFetcherProvider(new SSUDataFetcher());
-
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            //some json thing
-            e.printStackTrace();
-        }
-        try {
-            //testing purposes
-            if (Files.exists(Paths.get("localtest.h2.db"))) {
-                dm.deliverDBProvider(new SSUSQLManager(DriverManager.
-                        getConnection("jdbc:h2:file:localtest;", "sa", "")), new H2Queries());
-            }
-            else {
-                dm.deliverDataFetcherProvider(new SSUDataFetcher());
-                dm.deliverDBProvider(new SSUSQLManager(DriverManager.
-                        getConnection("jdbc:h2:file:localtest;INIT=RUNSCRIPT FROM './initTT.sql'", "sa", "")),
-                        new H2Queries());
-                dm.putDepartments();
-                dm.putAllGroups();
-                for (String d: dm.getDepartmentTags())
-                    for (String gr: dm.getGroups(d)) {
-                        dm.putTT(d, dm.getGroupID(d, gr));
-                    }
-            }
-        } catch (SQLException e) {
-           jsh.getFailure(Module.GENSQL.name(),e.getMessage());
-        } catch (NoSuchDepartmentException | NoSuchGroupException e) {
-            jsh.getFailure(Module.TTSQL.name(), e.getMessage());
-        } catch (IOException e) {
-            jsh.getFailure(Module.IO.name(), e.getMessage());
-        }
-        jsh = new JSONHandler();
+    public TTDataCommunicator(TTDataManager dm, JSONHandler jsh) {
+        this.dm = dm;
+        this.jsh = jsh;
     }
 
     public void putDepartments() {
@@ -185,4 +133,6 @@ public class TTDataCommunicator {
         }
         return result;
     }
+
+
 }
