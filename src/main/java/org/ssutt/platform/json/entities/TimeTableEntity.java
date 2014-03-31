@@ -16,5 +16,23 @@
 
 package org.ssutt.platform.json.entities;
 
+import java.util.List;
+import java.util.Map;
+
 public class TimeTableEntity {
+    private String weekday;
+    private List<Map<String, String>> data;
+
+    public TimeTableEntity(String weekday, List<Map<String, String>>  data) {
+        this.weekday = weekday;
+        this.data = data;
+    }
+
+    public String getWeekday() {
+        return weekday;
+    }
+
+    public List<Map<String, String>> getData() {
+        return data;
+    }
 }

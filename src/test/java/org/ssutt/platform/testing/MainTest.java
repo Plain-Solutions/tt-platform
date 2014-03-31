@@ -30,8 +30,8 @@ public class MainTest {
         System.out.println(dc.getDepartments());
         System.out.println(dc.getGroupNames("knt"));
         System.out.println(dc.testFailure());
-        //System.out.println(dc.getGroupNames("sf"));
-        //System.out.println(dc.getTT(Integer.parseInt(dc.getGroupID("knt","151"))));
+
+        System.out.println(dc.convertTT(Integer.parseInt(dc.getGroupID("knt","151"))));
 
 
     }

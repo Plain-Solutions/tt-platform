@@ -173,11 +173,11 @@ public class TTDataCommunicator {
         return  result;
     }
 
-    public String getTT(int groupID) {
+    public String convertTT(int groupID) {
         String result = "";
         try {
-            dm.getTT(groupID);
-
+            List<String[]> raw = dm.getTT(groupID);
+            result = jsh.convertTT(raw);
         } catch (SQLException e) {
             jsh.getFailure(Module.GENSQL.name(), e.getMessage());
         } catch (NoSuchGroupException | EmptyTableException e ) {

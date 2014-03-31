@@ -16,5 +16,34 @@
 
 package org.ssutt.platform.json.serializers;
 
-public class TimeTableSerializer {
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import org.ssutt.platform.json.entities.TimeTableEntity;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
+public class TimeTableSerializer implements JsonSerializer<TimeTableEntity> {
+    @Override
+    public JsonElement serialize(TimeTableEntity tt, Type type, JsonSerializationContext jsonSerializationContext) {
+        JsonObject result = new JsonObject();
+        JsonObject day = new JsonObject();
+
+        List<Map<String, String>> data = tt.getData();
+
+        for (Map<String, String> aLesson: data)
+        {
+            JsonObject lesson = new JsonObject();
+            for (String key: aLesson.keySet()) {
+                lesson.addProperty(key, aLesson.get(key));
+            }
+            day.add(tt.getWeekday(),lesson);
+        }
+
+        result.add(tt.getWeekday(),day);
+        return result;
+    }
 }

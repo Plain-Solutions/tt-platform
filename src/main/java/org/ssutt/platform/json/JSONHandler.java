@@ -20,8 +20,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.ssutt.platform.json.entities.DepartmentEntity;
 import org.ssutt.platform.json.entities.FailureEntity;
+import org.ssutt.platform.json.entities.TimeTableEntity;
 import org.ssutt.platform.json.serializers.DepartmentSerializer;
+import org.ssutt.platform.json.serializers.TimeTableSerializer;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +51,31 @@ public class JSONHandler {
         return gson.toJson(id);
     }
 
-    public String getTT() {
+    public String convertTT(List<String[]> table) {
+        GsonBuilder gsb = new GsonBuilder();
 
-        return null;
+        Map<String, List<Map<String, String>>> temp = new LinkedHashMap<>();
+
+        for (String[] record: table){
+            String weekday  = record[0];
+            Map<String, String> t = new LinkedHashMap<>();
+            t.put("parity", record[1]);
+            t.put("sequence", record[2]);
+            t.put("info", record[3]);
+            if (temp.containsKey(weekday)) {
+                temp.get(weekday).add(t);
+            }
+            else {
+                List<Map <String, String>> tT = new ArrayList<>();
+                tT.add(t);
+                temp.put(weekday,tT);
+            }
+
+        }
+
+
+        gsb.registerTypeAdapter(TimeTableEntity.class, new TimeTableSerializer());
+        return gsb.create().toJson(temp);
     }
 
     public String getFailure(String module, String msg) {
