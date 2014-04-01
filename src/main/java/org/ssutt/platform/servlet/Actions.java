@@ -15,8 +15,9 @@
  */
 package org.ssutt.platform.servlet;
 
-import org.ssutt.platform.communicator.CommunicationPool;
-import org.ssutt.platform.communicator.TTDataCommunicator;
+import org.ssutt.core.dm.SSUDataManager;
+import org.ssutt.core.dm.TTData;
+import org.ssutt.platform.factory.TTDataManagerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -27,35 +28,23 @@ import static spark.Spark.get;
 public class Actions implements SparkApplication {
     @Override
     public void init() {
-        final CommunicationPool cp = CommunicationPool.getInstance();
+        final TTDataManagerFactory dmf = TTDataManagerFactory.getInstance();
         get(new Route("/department/:tag/group/:name") {
             @Override
             public Object handle(Request request, Response response) {
-                TTDataCommunicator dc = cp.getDCinstance();
+                SSUDataManager  dm = dmf.produce();
+                TTData result = dm.getTT(Integer.parseInt(dm.getGroupID(request.params(":tag"),request.params(":name")).getMessage()));
+                response.status(result.getHttpCode());
+                return result.getMessage();
+            }});
 
-                String result =  dc.getTT(Integer.parseInt(
-                        dc.getGroupID(
-                                request.params(":tag"), request.params(":name"))
-                ));
-                if (result.contains("error"))
-                    response.status(404);
-                else
-                    response.status(200);
-                return result;
-            }
-        });
         get(new Route("/department/:tag/groups") {
             @Override
             public Object handle(Request request, Response response) {
-                TTDataCommunicator dc = cp.getDCinstance();
-                System.out.println(dc.getGroupNames(request.params(":tag")));
-                String result = dc.getGroupNames(request.params(":tag"));
-
-                if (result.contains("error"))
-                    response.status(404);
-                else
-                    response.status(200);
-                return result;
+                SSUDataManager dm = dmf.produce();
+                TTData result = dm.getGroups(request.params(":tag"));
+                response.status(result.getHttpCode());
+                return result.getMessage();
             }
         });
 
@@ -63,13 +52,20 @@ public class Actions implements SparkApplication {
         get(new Route("/departments") {
             @Override
             public Object handle(Request request, Response response) {
-                TTDataCommunicator dc = cp.getDCinstance();
-                String result = dc.getDepartments();
-                if (result.contains("error"))
-                    response.status(404);
-                else
-                    response.status(200);
-                return result;
+                SSUDataManager dm = dmf.produce();
+                TTData result = dm.getDepartments();
+                response.status(result.getHttpCode());
+
+                return result.getMessage();
+            }
+        });
+
+
+        get(new Route("/"){
+            @Override
+            public Object handle(Request request, Response response) {
+                response.redirect("http://ssutt.org/developers");
+                return 0;
             }
         });
 

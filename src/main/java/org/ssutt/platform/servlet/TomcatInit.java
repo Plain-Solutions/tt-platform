@@ -17,14 +17,12 @@
 package org.ssutt.platform.servlet;
 
 import org.ssutt.core.dm.SSUDataManager;
+import org.ssutt.core.dm.TTData;
+import org.ssutt.core.dm.convert.json.JSONConverter;
 import org.ssutt.core.fetch.SSUDataFetcher;
 import org.ssutt.core.sql.H2Queries;
 import org.ssutt.core.sql.SSUSQLManager;
-import org.ssutt.core.sql.ex.NoSuchDepartmentException;
-import org.ssutt.core.sql.ex.NoSuchGroupException;
-import org.ssutt.platform.communicator.CommunicationPool;
-import org.ssutt.platform.communicator.Module;
-import org.ssutt.platform.json.JSONHandler;
+import org.ssutt.platform.factory.TTDataManagerFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -32,41 +30,51 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class TomcatInit implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        JSONHandler jsh = new JSONHandler();
+
+
+        DataSource ds = null;
         try {
             Context initContext = new InitialContext();
-            DataSource ds = (DataSource) initContext.lookup("java:/comp/env/jdbc/ttDS");
-
-            SSUDataManager dm = new SSUDataManager();
-            dm.deliverDBProvider(new SSUSQLManager(ds.getConnection()), new H2Queries());
-            dm.deliverDataFetcherProvider(new SSUDataFetcher());
-
-            //for access to initialized Manager outside servlets
-            CommunicationPool cp = CommunicationPool.getInstance();
-            CommunicationPool.setDataManager(dm);
-            CommunicationPool.setJSONHandler(jsh);
-            dm.putDepartments();
-            dm.putAllGroups();
-            for (String d : dm.getDepartmentTags())
-                for (String gr : dm.getGroups(d)) {
-                    dm.putTT(d, dm.getGroupID(d, gr));
-                }
-        } catch (SQLException | NamingException e) {
-            System.out.println(jsh.getFailure(Module.GENSQL.name(), e.getCause().toString()));
-        } catch (NoSuchDepartmentException e) {
-            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such department"));
-        } catch (IOException e) {
-            System.out.println(jsh.getFailure(Module.IO.name(), e.getMessage()));
-        } catch (NoSuchGroupException e) {
-            System.out.println(jsh.getFailure(Module.TTSQL.name(), "No such group"));
+            ds = (DataSource) initContext.lookup("java:/comp/env/jdbc/ttDS");
+        } catch (NamingException e) {
+            e.printStackTrace();
         }
+
+        TTDataManagerFactory ttdmf = TTDataManagerFactory.getInstance();
+        if (ds != null) {
+            try {
+                TTDataManagerFactory.supplySQLManager(new SSUSQLManager(ds.getConnection()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+        }
+        TTDataManagerFactory.supplyQueries(new H2Queries());
+        TTDataManagerFactory.supplyDataFetcher(new SSUDataFetcher());
+        TTDataManagerFactory.supplyDataConverter(new JSONConverter());
+
+        SSUDataManager dm = ttdmf.produce();
+        TTData status = dm.putDepartments();
+        if (status.getHttpCode()!=404) {
+            status =dm.putAllGroups();
+            if (status.getHttpCode()!=404) {
+                status = dm.getDepartmentTags();
+                for (String dep: dm.getJSONConverter().reverseConvertGroup(status.getMessage()))
+                    for (String group: dm.getJSONConverter().reverseConvertGroup(dm.getGroups(dep).getMessage())) {
+                        dm.putTT(dep, Integer.parseInt(dm.getGroupID(dep,group).getMessage()));
+                    }
+
+            }
+        }
+
+
+
 
     }
 

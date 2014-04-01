@@ -4,8 +4,8 @@ SSU TimeTable API Reference
 General
 -------
 
-All methods use common prefix /api/```api_version```, where ```api_version``` is the major API version number.
-
+Now all the requests can be called directly from `/`.
+So, the address is [api.ssutt.org].
 
 Basic Requests
 --------------
@@ -13,7 +13,7 @@ Basic Requests
 Common API for interacting with a service.
 
 ---
-### [GET] /api/1/departments
+### [GET] /departments
 
 Get list of department tags and names, sorted by names.
 
@@ -35,7 +35,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /api/1/< department_tag >/groups
+### [GET] /department/< department_tag >/groups
 
 Get list of group names for selected department.
 
@@ -56,7 +56,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /api/1/department/< department_tag >/group/< group_name >
+### [GET] /department/< department_tag >/group/< group_name >
 
 Get timetable of group from department. Results are sorted by days, then by sequence of lessons, and finally (should be, not checked) by parity: **even < odd**, see second example. 
 
