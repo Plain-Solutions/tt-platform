@@ -34,7 +34,12 @@ public class Actions implements SparkApplication {
             public Object handle(Request request, Response response) {
                 SSUDataManager  dm = dmf.produce();
                 TTData result = dm.getTT(Integer.parseInt(dm.getGroupID(request.params(":tag"),request.params(":name")).getMessage()));
+                response.type("application/json");
+                response.header("Access-Control-Allow-Origin", "*");
+                response.header("Access-Control-Allow-Methods", "POST, GET");
+
                 response.status(result.getHttpCode());
+
                 return result.getMessage();
             }});
 
@@ -43,6 +48,9 @@ public class Actions implements SparkApplication {
             public Object handle(Request request, Response response) {
                 SSUDataManager dm = dmf.produce();
                 TTData result = dm.getGroups(request.params(":tag"));
+                response.type("application/json");
+                response.header("Access-Control-Allow-Origin", "*");
+                response.header("Access-Control-Allow-Methods", "POST, GET");
                 response.status(result.getHttpCode());
                 return result.getMessage();
             }
@@ -54,6 +62,10 @@ public class Actions implements SparkApplication {
             public Object handle(Request request, Response response) {
                 SSUDataManager dm = dmf.produce();
                 TTData result = dm.getDepartments();
+                response.type("application/json");
+                response.header("Access-Control-Allow-Origin", "*");
+                response.header("Access-Control-Allow-Methods", "POST, GET");
+
                 response.status(result.getHttpCode());
 
                 return result.getMessage();
