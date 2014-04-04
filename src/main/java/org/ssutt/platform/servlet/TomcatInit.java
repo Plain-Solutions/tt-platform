@@ -59,17 +59,20 @@ public class TomcatInit implements ServletContextListener {
         TTDataManagerFactory.supplyDataFetcher(new SSUDataFetcher());
         TTDataManagerFactory.supplyDataConverter(new JSONConverter());
 
-        SSUDataManager dm = ttdmf.produce();
-        TTData status = dm.putDepartments();
-        if (status.getHttpCode()!=404) {
-            status =dm.putAllGroups();
-            if (status.getHttpCode()!=404) {
-                status = dm.getDepartmentTags();
-                for (String dep: dm.getJSONConverter().reverseConvertGroup(status.getMessage()))
-                    for (String group: dm.getJSONConverter().reverseConvertGroup(dm.getGroups(dep).getMessage())) {
-                        dm.putTT(dep, Integer.parseInt(dm.getGroupID(dep,group).getMessage()));
-                    }
 
+            SSUDataManager dm = ttdmf.produce();
+        if (dm.getDepartments().getMessage().length() <= 2) {
+            TTData status = dm.putDepartments();
+            if (status.getHttpCode() != 404) {
+                status = dm.putAllGroups();
+                if (status.getHttpCode() != 404) {
+                    status = dm.getDepartmentTags();
+                    for (String dep : dm.getJSONConverter().reverseConvertGroup(status.getMessage()))
+                        for (String group : dm.getJSONConverter().reverseConvertGroup(dm.getGroups(dep).getMessage())) {
+                            dm.putTT(dep, Integer.parseInt(dm.getGroupID(dep, group).getMessage()));
+                        }
+
+                }
             }
         }
 
