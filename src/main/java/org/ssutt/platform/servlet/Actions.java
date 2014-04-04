@@ -23,6 +23,9 @@ import spark.Response;
 import spark.Route;
 import spark.servlet.SparkApplication;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import static spark.Spark.get;
 
 public class Actions implements SparkApplication {
@@ -33,10 +36,17 @@ public class Actions implements SparkApplication {
             @Override
             public Object handle(Request request, Response response) {
                 SSUDataManager  dm = dmf.produce();
-                TTData result = dm.getTT(Integer.parseInt(dm.getGroupID(request.params(":tag"),request.params(":name")).getMessage()));
+
+                String groupName = "";
+                try {
+                    groupName = URLDecoder.decode(request.params(":name"), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                TTData result = dm.getTT(Integer.parseInt(dm.getGroupID(request.params(":tag"),groupName).getMessage()));
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Allow-Methods", "POST, GET");
+                response.header("Access-Control-Allow-Methods", "GET");
 
                 response.status(result.getHttpCode());
 
@@ -50,7 +60,7 @@ public class Actions implements SparkApplication {
                 TTData result = dm.getGroups(request.params(":tag"));
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Allow-Methods", "POST, GET");
+                response.header("Access-Control-Allow-Methods", "GET");
                 response.status(result.getHttpCode());
                 return result.getMessage();
             }
@@ -64,7 +74,7 @@ public class Actions implements SparkApplication {
                 TTData result = dm.getDepartments();
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Allow-Methods", "POST, GET");
+                response.header("Access-Control-Allow-Methods", "GET");
 
                 response.status(result.getHttpCode());
 
