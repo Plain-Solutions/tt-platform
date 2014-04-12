@@ -15,8 +15,8 @@
  */
 package org.ssutt.platform.servlet;
 
-import org.ssutt.core.dm.SSUDataManager;
-import org.ssutt.core.dm.TTData;
+import org.tt.core.dm.SSUDataManager;
+import org.tt.core.dm.TTData;
 import org.ssutt.platform.factory.TTDataManagerFactory;
 import spark.Request;
 import spark.Response;

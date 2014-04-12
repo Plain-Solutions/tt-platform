@@ -16,12 +16,6 @@
 
 package org.ssutt.platform.servlet;
 
-import org.ssutt.core.dm.SSUDataManager;
-import org.ssutt.core.dm.TTData;
-import org.ssutt.core.dm.convert.json.JSONConverter;
-import org.ssutt.core.fetch.SSUDataFetcher;
-import org.ssutt.core.sql.H2Queries;
-import org.ssutt.core.sql.SSUSQLManager;
 import org.ssutt.platform.factory.TTDataManagerFactory;
 
 import javax.naming.Context;
@@ -30,7 +24,8 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
-import java.sql.SQLException;
+import java.io.IOException;
+import java.util.Properties;
 
 public class TomcatInit implements ServletContextListener {
 
@@ -47,39 +42,23 @@ public class TomcatInit implements ServletContextListener {
         }
 
         TTDataManagerFactory ttdmf = TTDataManagerFactory.getInstance();
-        if (ds != null) {
-            try {
-                TTDataManagerFactory.supplySQLManager(new SSUSQLManager(ds.getConnection()));
-            } catch (SQLException e) {
-                e.printStackTrace();
+        Properties prop = new Properties();
 
-            }
-        }
-        TTDataManagerFactory.supplyQueries(new H2Queries());
-        TTDataManagerFactory.supplyDataFetcher(new SSUDataFetcher());
-        TTDataManagerFactory.supplyDataConverter(new JSONConverter());
-
-
-            SSUDataManager dm = ttdmf.produce();
-        if (dm.getDepartments().getMessage().length() <= 2) {
-            TTData status = dm.putDepartments();
-            if (status.getHttpCode() != 404) {
-                status = dm.putAllGroups();
-                if (status.getHttpCode() != 404) {
-                    status = dm.getDepartmentTags();
-                    for (String dep : dm.getJSONConverter().reverseConvertGroup(status.getMessage()))
-                        for (String group : dm.getJSONConverter().reverseConvertGroup(dm.getGroups(dep).getMessage())) {
-                            dm.putTT(dep, Integer.parseInt(dm.getGroupID(dep, group).getMessage()));
-                        }
-
-                }
-            }
+        try {
+            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("tt.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-
-
+        System.out.println(prop.getProperty("sqlm"));
 
     }
+
+
+
+
+
+
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

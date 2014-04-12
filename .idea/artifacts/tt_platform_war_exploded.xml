@@ -8,7 +8,7 @@
           <element id="module-output" name="tt-platform" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: org.ssutt:tt-core:1.2.0" />
+          <element id="library" level="project" name="Maven: org.ssutt:tt-core:1.2.4" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.2.4" />
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.7.3" />
           <element id="library" level="project" name="Maven: com.sparkjava:spark-core:1.1.1" />

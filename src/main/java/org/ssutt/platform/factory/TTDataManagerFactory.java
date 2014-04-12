@@ -16,11 +16,13 @@
 
 package org.ssutt.platform.factory;
 
-import org.ssutt.core.dm.AbstractDataConverter;
-import org.ssutt.core.dm.SSUDataManager;
-import org.ssutt.core.fetch.AbstractDataFetcher;
-import org.ssutt.core.sql.AbstractQueries;
-import org.ssutt.core.sql.AbstractSQLManager;
+import org.tt.core.dm.AbstractDataConverter;
+import org.tt.core.dm.SSUDataManager;
+import org.tt.core.fetch.AbstractDataFetcher;
+import org.tt.core.sql.AbstractQueries;
+import org.tt.core.sql.AbstractSQLManager;
+
+import java.sql.Connection;
 
 public class TTDataManagerFactory {
     private static TTDataManagerFactory ttdmf;
@@ -29,7 +31,7 @@ public class TTDataManagerFactory {
     private static AbstractSQLManager asqlm;
     private static AbstractQueries aqrs;
     private static AbstractDataConverter adc;
-
+    private static String url;
 
     private TTDataManagerFactory(){}
 
@@ -40,24 +42,27 @@ public class TTDataManagerFactory {
         return ttdmf;
     }
 
-    public static void supplyDataFetcher(AbstractDataFetcher adf) {
+    public static void supplyDataFetcher(String classname) {
         TTDataManagerFactory.adf = adf;
     }
 
-    public static void supplySQLManager(AbstractSQLManager asqlm) {
+    public static void supplySQLManagerConnection(Connection con) {
+
         TTDataManagerFactory.asqlm = asqlm;
     }
 
-    public static void supplyQueries(AbstractQueries aqrs) {
+    public static void supplyQueries(String classname) {
         TTDataManagerFactory.aqrs = aqrs;
     }
 
-    public static void supplyDataConverter(AbstractDataConverter adc) {
+    public static void supplyDataConverter(String classname) {
         TTDataManagerFactory.adc = adc;
     }
 
+    public static void supplyDataFetchingURL(String url) {TTDataManagerFactory.url = url; }
+
     public SSUDataManager produce() {
-        return new SSUDataManager(asqlm, aqrs, adf, adc);
+        return new SSUDataManager(asqlm, aqrs, adf, adc, url);
     }
 
 
