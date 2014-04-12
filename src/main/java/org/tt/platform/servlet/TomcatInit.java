@@ -25,6 +25,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class TomcatInit implements ServletContextListener {
@@ -41,17 +43,26 @@ public class TomcatInit implements ServletContextListener {
             e.printStackTrace();
         }
 
-        TTDataManagerFactory ttdmf = TTDataManagerFactory.getInstance();
+        TTDataManagerFactory.getInstance();
         Properties prop = new Properties();
 
         try {
-            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/WEB-INF/tt.properties"));
+            prop.load(servletContextEvent.getServletContext().getResourceAsStream("/WEB-INF/tt.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        System.out.println(prop.getProperty("sqlm"));
-
+        try {
+            assert ds != null;
+            TTDataManagerFactory.supplySQLManagerConnection(ds.getConnection(), prop.getProperty("sqlm"));
+            TTDataManagerFactory.supplyQueries(prop.getProperty("qrs"));
+            TTDataManagerFactory.supplyDataFetcher(prop.getProperty("df"));
+            TTDataManagerFactory.supplyDataConverter(prop.getProperty("dconv"));
+            TTDataManagerFactory.supplyDataManager(prop.getProperty("dm"));
+            TTDataManagerFactory.supplyDataFetchingURL(prop.getProperty("url"));
+        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 

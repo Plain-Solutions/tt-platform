@@ -17,11 +17,12 @@
 package org.tt.platform.factory;
 
 import org.tt.core.dm.AbstractDataConverter;
-import org.tt.core.dm.SSUDataManager;
+import org.tt.core.dm.AbstractDataManager;
 import org.tt.core.fetch.AbstractDataFetcher;
 import org.tt.core.sql.AbstractQueries;
 import org.tt.core.sql.AbstractSQLManager;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 
 public class TTDataManagerFactory {
@@ -31,6 +32,7 @@ public class TTDataManagerFactory {
     private static AbstractSQLManager asqlm;
     private static AbstractQueries aqrs;
     private static AbstractDataConverter adc;
+    private static String dmClass;
     private static String url;
 
     private TTDataManagerFactory(){}
@@ -42,27 +44,33 @@ public class TTDataManagerFactory {
         return ttdmf;
     }
 
-    public static void supplyDataFetcher(String classname) {
-        TTDataManagerFactory.adf = adf;
+    public static void supplyDataFetcher(String classname) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        TTDataManagerFactory.adf = (AbstractDataFetcher) Class.forName(classname).getConstructor().newInstance();
     }
 
-    public static void supplySQLManagerConnection(Connection con) {
-
-        TTDataManagerFactory.asqlm = asqlm;
+    public static void supplySQLManagerConnection(Connection con, String classname) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        TTDataManagerFactory.asqlm = (AbstractSQLManager) Class.forName(classname).getConstructor(Connection.class).newInstance(con);
     }
 
-    public static void supplyQueries(String classname) {
-        TTDataManagerFactory.aqrs = aqrs;
+    public static void supplyQueries(String classname) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        TTDataManagerFactory.aqrs = (AbstractQueries) Class.forName(classname).getConstructor().newInstance();
     }
 
-    public static void supplyDataConverter(String classname) {
-        TTDataManagerFactory.adc = adc;
+    public static void supplyDataConverter(String classname) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        TTDataManagerFactory.adc = (AbstractDataConverter) Class.forName(classname).getConstructor().newInstance();
     }
 
     public static void supplyDataFetchingURL(String url) {TTDataManagerFactory.url = url; }
 
-    public SSUDataManager produce() {
-        return new SSUDataManager(asqlm, aqrs, adf, adc, url);
+    public static void supplyDataManager (String classname) { TTDataManagerFactory.dmClass = classname; }
+
+    public AbstractDataManager produce() {
+        try {
+            return (AbstractDataManager)Class.forName(dmClass).getConstructor(AbstractSQLManager.class, AbstractQueries.class, AbstractDataFetcher.class, AbstractDataConverter.class, String.class).newInstance(asqlm, aqrs, adf, adc, url);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

@@ -15,7 +15,7 @@
  */
 package org.tt.platform.servlet;
 
-import org.tt.core.dm.SSUDataManager;
+import org.tt.core.dm.AbstractDataManager;
 import org.tt.core.dm.TTData;
 import org.tt.platform.factory.TTDataManagerFactory;
 import spark.Request;
@@ -35,7 +35,7 @@ public class Actions implements SparkApplication {
         get(new Route("/department/:tag/group/:name") {
             @Override
             public Object handle(Request request, Response response) {
-                SSUDataManager  dm = dmf.produce();
+                AbstractDataManager dm = dmf.produce();
 
                 String groupName = "";
                 try {
@@ -43,7 +43,7 @@ public class Actions implements SparkApplication {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                TTData result = dm.getTT(Integer.parseInt(dm.getGroupID(request.params(":tag"),groupName).getMessage()));
+                TTData result = dm.getTT(request.params(":tag"), groupName);
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");
@@ -56,7 +56,7 @@ public class Actions implements SparkApplication {
         get(new Route("/department/:tag/groups") {
             @Override
             public Object handle(Request request, Response response) {
-                SSUDataManager dm = dmf.produce();
+                AbstractDataManager dm = dmf.produce();
                 TTData result = dm.getGroups(request.params(":tag"));
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
@@ -70,7 +70,7 @@ public class Actions implements SparkApplication {
         get(new Route("/departments") {
             @Override
             public Object handle(Request request, Response response) {
-                SSUDataManager dm = dmf.produce();
+                AbstractDataManager dm = dmf.produce();
                 TTData result = dm.getDepartments();
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
