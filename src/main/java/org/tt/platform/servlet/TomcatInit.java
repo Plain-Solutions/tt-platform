@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.ssutt.platform.servlet;
+package org.tt.platform.servlet;
 
-import org.ssutt.platform.factory.TTDataManagerFactory;
+import org.tt.platform.factory.TTDataManagerFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -45,7 +45,7 @@ public class TomcatInit implements ServletContextListener {
         Properties prop = new Properties();
 
         try {
-            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("tt.properties"));
+            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/WEB-INF/tt.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

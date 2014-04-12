@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ssutt.platform.servlet;
+package org.tt.platform.servlet;
 
 import org.tt.core.dm.SSUDataManager;
 import org.tt.core.dm.TTData;
-import org.ssutt.platform.factory.TTDataManagerFactory;
+import org.tt.platform.factory.TTDataManagerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;

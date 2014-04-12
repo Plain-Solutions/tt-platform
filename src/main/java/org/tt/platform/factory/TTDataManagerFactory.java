@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ssutt.platform.factory;
+package org.tt.platform.factory;
 
 import org.tt.core.dm.AbstractDataConverter;
 import org.tt.core.dm.SSUDataManager;
