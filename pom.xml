@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.tt</groupId>
             <artifactId>tt-core</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
