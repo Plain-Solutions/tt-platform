@@ -1,6 +1,12 @@
 Changelog
 =========
-<sub><sup>(Fix builds, which were pushed to master withoud release are in ***italics***)</sup></sub>
+<sub><sup>(Fix builds, which were pushed to master without release are in ***italics***)</sup></sub>
+
+###TT Platform 1.1
+
+* Reworked logics of `TomcatInit` - now it does not init database, only connects.
+* `TTDataManagerFactory` is configured with help of local properties file.
+* This configuration can be collected via native method, returning JSON array.
 
 ###TT Platform 1.0.3
 

@@ -83,6 +83,21 @@ public class Actions implements SparkApplication {
         });
 
 
+        get(new Route("/cfg") {
+            @Override
+            public Object handle(Request request, Response response){
+                AbstractDataManager dm = dmf.produce();
+                TTData result = dm.getFormattedString(dmf.getTTConfiguration());
+                response.type("application/json");
+                response.header("Access-Control-Allow-Origin", "*");
+                response.header("Access-Control-Allow-Methods", "GET");
+
+                response.status(result.getHttpCode());
+
+                return result.getMessage();
+            }
+        });
+
         get(new Route("/"){
             @Override
             public Object handle(Request request, Response response) {
@@ -90,7 +105,6 @@ public class Actions implements SparkApplication {
                 return 0;
             }
         });
-
 
     }
 }
