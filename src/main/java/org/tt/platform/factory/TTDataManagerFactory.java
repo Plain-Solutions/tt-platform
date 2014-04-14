@@ -24,9 +24,7 @@ import org.tt.core.sql.AbstractSQLManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TTDataManagerFactory {
@@ -81,6 +79,7 @@ public class TTDataManagerFactory {
             cfg.put("sqlm", asqlmClass);
             cfg.put("qrs", aqrsClass);
             cfg.put("dm", dmClass);
+            cfg.put("dc", adcClass);
             cfg.put("url",url);
 
             return cfg;
