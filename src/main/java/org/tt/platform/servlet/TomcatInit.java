@@ -68,7 +68,7 @@ public class TomcatInit implements ServletContextListener {
                 AbstractDataManager adm = ttdmf.produce();
                 System.out.println(adm.putDepartments().getMessage());
                 System.out.println(adm.putAllGroups().getMessage());
-                System.out.println(adm.putAllGroups().getMessage());
+                System.out.println(adm.putAllTT().getMessage());
             }
         } catch (SQLException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
