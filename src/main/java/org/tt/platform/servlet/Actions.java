@@ -16,7 +16,7 @@
 package org.tt.platform.servlet;
 
 import org.tt.core.dm.AbstractDataManager;
-import org.tt.core.dm.TTData;
+import org.tt.core.entity.datamanager.TTData;
 import org.tt.platform.factory.TTDataManagerFactory;
 import spark.Request;
 import spark.Response;
@@ -72,22 +72,6 @@ public class Actions implements SparkApplication {
             public Object handle(Request request, Response response) {
                 AbstractDataManager dm = dmf.produce();
                 TTData result = dm.getDepartments();
-                response.type("application/json");
-                response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Allow-Methods", "GET");
-
-                response.status(result.getHttpCode());
-
-                return result.getMessage();
-            }
-        });
-
-
-        get(new Route("/cfg") {
-            @Override
-            public Object handle(Request request, Response response){
-                AbstractDataManager dm = dmf.produce();
-                TTData result = dm.getFormattedString(dmf.getTTConfiguration());
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");

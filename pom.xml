@@ -23,7 +23,7 @@
     <groupId>org.tt</groupId>
     <artifactId>tt-platform</artifactId>
     <packaging>war</packaging>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.tt</groupId>
             <artifactId>tt-core</artifactId>
-            <version>1.2.6</version>
+            <version>2.0.0-rc</version>
         </dependency>
     </dependencies>
 
@@ -93,7 +93,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <finalName>tt-platform-1.1</finalName>
+                    <finalName>tt-platform-1.2</finalName>
                 </configuration>
             </plugin>
             <plugin>

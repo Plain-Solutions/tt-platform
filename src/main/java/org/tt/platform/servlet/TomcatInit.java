@@ -16,6 +16,7 @@
 
 package org.tt.platform.servlet;
 
+import org.tt.core.dm.AbstractDataManager;
 import org.tt.platform.factory.TTDataManagerFactory;
 
 import javax.naming.Context;
@@ -43,7 +44,7 @@ public class TomcatInit implements ServletContextListener {
             e.printStackTrace();
         }
 
-        TTDataManagerFactory.getInstance();
+        TTDataManagerFactory ttdmf = TTDataManagerFactory.getInstance();
         Properties prop = new Properties();
 
         try {
@@ -54,12 +55,21 @@ public class TomcatInit implements ServletContextListener {
 
         try {
             assert ds != null;
+
             TTDataManagerFactory.supplySQLManagerConnection(ds.getConnection(), prop.getProperty("sqlm"));
             TTDataManagerFactory.supplyQueries(prop.getProperty("qrs"));
+            TTDataManagerFactory.supplyLDFCredential(prop.getProperty("ldf"));
             TTDataManagerFactory.supplyDataFetcher(prop.getProperty("df"));
             TTDataManagerFactory.supplyDataConverter(prop.getProperty("dconv"));
             TTDataManagerFactory.supplyDataManager(prop.getProperty("dm"));
-            TTDataManagerFactory.supplyDataFetchingURL(prop.getProperty("url"));
+
+            if (prop.getProperty("firststart").equals("1")) {
+                prop.setProperty("firststart", "0");
+                AbstractDataManager adm = ttdmf.produce();
+                System.out.println(adm.putDepartments().getMessage());
+                System.out.println(adm.putAllGroups().getMessage());
+                System.out.println(adm.putAllGroups().getMessage());
+            }
         } catch (SQLException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

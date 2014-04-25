@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.tt:tt-core:2.0.0-rc">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/tt/tt-core/2.0.0-rc/tt-core-2.0.0-rc.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/tt/tt-core/2.0.0-rc/tt-core-2.0.0-rc-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/tt/tt-core/2.0.0-rc/tt-core-2.0.0-rc-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
