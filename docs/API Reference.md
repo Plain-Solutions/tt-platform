@@ -83,6 +83,7 @@ Status code:
 Response in case of success:
 
 **simpliest:**
+
 ```json
 {
         "parity": "full",
@@ -105,8 +106,10 @@ Response in case of success:
 ```
 
 **several subgroups:**
+
 ```json
-  "parity": "full",
+{
+		"parity": "full",
         "sequence": 3,
         "info": [
           {
@@ -132,6 +135,7 @@ Response in case of success:
 ```   
 
 ***several subject at the same day-parity-time:***
+
 ```json
       {
         "parity": "full",
@@ -182,6 +186,7 @@ Response in case of success:
         ]
       }
       ```   
+	
 	
 ---
 ### Response in case of failure
