@@ -17,7 +17,7 @@ Dependencies
 The whole library is built with Maven, but here is the brief list of main dependencies:
 
 * Java 7 (jdk>=1.7.0)
-* TT Core should be provided in local maven repository. (tt-core=1.2.0)
+* TT Core should be provided in local maven repository. (tt-core>=2.0.0-rc)
 * Java Spark Core (spark-core=1.1.1)
 
 License

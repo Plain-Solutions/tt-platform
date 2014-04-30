@@ -3,10 +3,11 @@ Changelog
 <sub><sup>(Fix builds, which were pushed to master without release are in ***italics***)</sup></sub>
 
 ###TT Platform 1.2
-* Removed getting configuration as it includes private data.
+* Removed configuration file `tt.properties` from distribution as it includes private data.
 * Now requires `tt-core`***>=2.0.0-rc***
 * Support `LexxDataFetcher`
 * `tt.properties` now has parameter `firststart` to fill DB for the first time and `ldf` to get LDF credentials.
+* Added `TTTimer` support and jobs initialization. 
 
 ###TT Platform 1.1
 

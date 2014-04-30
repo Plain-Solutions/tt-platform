@@ -7,7 +7,7 @@ I don't think that anyone will use the old version, just for your information an
 
 | TT Core Lib   | TT Platform   | TT FireStarter
 | :-----------: |:-------------:| :------------:
-| ***2.0.0***	| **1.2.0** | ***1.0.0***
+| ***2.0.0***	| [1.2.0](https://github.com/Plain-Solutions/tt-platform/releases/tag/1.2.0) | ***1.0.0***
 | 1.2.5, 1.2.6 | Manual fixes on 1.1-RC |  [Test Build](https://github.com/Plain-Solutions/tt-firestarter/tree/89beaac16401a6de89a47a20c52597736e802498)
 | [1.2.4](http://github.com/Plain-Solutions/tt-core/releases/tag/1.2.4) | [1.1-RC](https://github.com/Plain-Solutions/tt-platform/tree/2a80eb585553218dea9b5787e313d9dec28d3775) | None
 | [1.2.0](https://github.com/Plain-Solutions/tt-core/releases/tag/1.2.0)      | [1.0.0-1.0.3](https://github.com/Plain-Solutions/tt-platform/releases/tag/1.0.0)     | None     
