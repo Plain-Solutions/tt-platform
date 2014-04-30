@@ -20,10 +20,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ssutt</groupId>
+    <groupId>org.tt</groupId>
     <artifactId>tt-platform</artifactId>
     <packaging>war</packaging>
-    <version>1.0.3</version>
+    <version>1.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,9 +45,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.ssutt</groupId>
+            <groupId>org.tt</groupId>
             <artifactId>tt-core</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.6</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -59,6 +59,11 @@
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tt</groupId>
+            <artifactId>tt-core</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 
@@ -88,7 +93,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <finalName>tt-platform-1.0.3</finalName>
+                    <finalName>tt-platform-1.2</finalName>
                 </configuration>
             </plugin>
             <plugin>

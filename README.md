@@ -1,6 +1,6 @@
 TT  Platform 
 ===========
-[SSU TimeTables](http://ssutt.org) is a startup by Plain Solutions, group of several students, which is created to bring university schedules to your palm - your mobile devices.
+[SSU TimeTables](http://ssutt.org) is a project maintained by Plain Solutions, group of several students, which is created to bring university schedules to your palm - your mobile devices.
 
 General
 =======
@@ -17,7 +17,7 @@ Dependencies
 The whole library is built with Maven, but here is the brief list of main dependencies:
 
 * Java 7 (jdk>=1.7.0)
-* TT Core should be provided in local maven repository. (tt-core=1.2.0)
+* TT Core should be provided in local maven repository. (tt-core>=2.0.0-rc)
 * Java Spark Core (spark-core=1.1.1)
 
 License
