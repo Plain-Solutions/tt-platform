@@ -63,13 +63,15 @@ public class TomcatInit implements ServletContextListener {
             TTDataManagerFactory.supplyDataConverter(prop.getProperty("dconv"));
             TTDataManagerFactory.supplyDataManager(prop.getProperty("dm"));
 
+            AbstractDataManager adm = ttdmf.produce();
+
             if (prop.getProperty("firststart").equals("1")) {
                 prop.setProperty("firststart", "0");
-                AbstractDataManager adm = ttdmf.produce();
                 System.out.println(adm.putDepartments().getMessage());
                 System.out.println(adm.putAllGroups().getMessage());
                 System.out.println(adm.putAllTT().getMessage());
             }
+            System.out.println(adm.initUpdateJobs().getMessage());
         } catch (SQLException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
