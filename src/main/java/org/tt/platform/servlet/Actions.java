@@ -16,8 +16,10 @@
 package org.tt.platform.servlet;
 
 import org.tt.core.dm.AbstractDataManager;
+import org.tt.core.dm.convert.json.JSONConverter;
 import org.tt.core.entity.datamanager.TTData;
 import org.tt.platform.factory.TTDataManagerFactory;
+import org.tt.core.entity.datafetcher.Department;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -25,6 +27,7 @@ import spark.servlet.SparkApplication;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import static spark.Spark.get;
 
@@ -32,6 +35,7 @@ public class Actions implements SparkApplication {
     @Override
     public void init() {
         final TTDataManagerFactory dmf = TTDataManagerFactory.getInstance();
+        final JSONConverter dconv = new JSONConverter();
         get(new Route("/department/:tag/group/:name") {
             @Override
             public Object handle(Request request, Response response) {
@@ -71,14 +75,14 @@ public class Actions implements SparkApplication {
             @Override
             public Object handle(Request request, Response response) {
                 AbstractDataManager dm = dmf.produce();
-                TTData result = dm.getDepartments();
+                List<Department> result = dm.getDepartments();
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");
+                response.status(200);
 
-                response.status(result.getHttpCode());
 
-                return result.getMessage();
+                return dconv.convertDepartmentList(result);
             }
         });
 
