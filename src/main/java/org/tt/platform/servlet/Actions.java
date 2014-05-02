@@ -15,10 +15,13 @@
  */
 package org.tt.platform.servlet;
 
-import org.tt.core.dm.AbstractDataManager;
-import org.tt.core.dm.convert.json.JSONConverter;
-import org.tt.core.entity.datamanager.TTData;
-import org.tt.platform.factory.TTDataManagerFactory;
+import org.tt.core.dm.TTDeliveryManager;
+import org.tt.core.dm.TTFactory;
+import org.tt.core.entity.datafetcher.Group;
+import org.tt.core.entity.db.TTEntity;
+import org.tt.core.sql.ex.NoSuchDepartmentException;
+import org.tt.core.sql.ex.NoSuchGroupException;
+import org.tt.platform.convert.json.JSONConverter;
 import org.tt.core.entity.datafetcher.Department;
 import spark.Request;
 import spark.Response;
@@ -27,6 +30,7 @@ import spark.servlet.SparkApplication;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.List;
 
 import static spark.Spark.get;
@@ -34,12 +38,12 @@ import static spark.Spark.get;
 public class Actions implements SparkApplication {
     @Override
     public void init() {
-        final TTDataManagerFactory dmf = TTDataManagerFactory.getInstance();
+        final TTFactory ttf = TTFactory.getInstance();
         final JSONConverter dconv = new JSONConverter();
         get(new Route("/department/:tag/group/:name") {
             @Override
             public Object handle(Request request, Response response) {
-                AbstractDataManager dm = dmf.produce();
+                TTDeliveryManager ttdm = ttf.produceDeliveryManager();
 
                 String groupName = "";
                 try {
@@ -47,26 +51,54 @@ public class Actions implements SparkApplication {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                TTData result = dm.getTT(request.params(":tag"), groupName);
+
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");
 
-                response.status(result.getHttpCode());
+                try {
+                    TTEntity result = ttdm.getTT(request.params(":tag"), groupName);
+                    response.status(200);
+                    return dconv.convertTT(result);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return String.format("{msg:%s}", e.getSQLState());
+                } catch (NoSuchDepartmentException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return "{msg: No such department found}";
+                } catch (NoSuchGroupException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return "{msg: No such group found}";
+                }
 
-                return result.getMessage();
+
             }});
 
         get(new Route("/department/:tag/groups") {
             @Override
             public Object handle(Request request, Response response) {
-                AbstractDataManager dm = dmf.produce();
-                TTData result = dm.getGroups(request.params(":tag"));
+                TTDeliveryManager ttdm = ttf.produceDeliveryManager();
+
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");
-                response.status(result.getHttpCode());
-                return result.getMessage();
+
+                try {
+                    List<Group> result = ttdm.getGroups(request.params(":tag"));
+                    response.status(200);
+                    return dconv.convertGroupList(result);
+                } catch (NoSuchDepartmentException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return "{msg: No such department found}";
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return String.format("{msg:%s}", e.getSQLState());
+                }
             }
         });
 
@@ -74,15 +106,21 @@ public class Actions implements SparkApplication {
         get(new Route("/departments") {
             @Override
             public Object handle(Request request, Response response) {
-                AbstractDataManager dm = dmf.produce();
-                List<Department> result = dm.getDepartments();
+                TTDeliveryManager ttdm = ttf.produceDeliveryManager();
+
                 response.type("application/json");
                 response.header("Access-Control-Allow-Origin", "*");
                 response.header("Access-Control-Allow-Methods", "GET");
-                response.status(200);
 
-
-                return dconv.convertDepartmentList(result);
+                try {
+                    List<Department> result = ttdm.getDepartments();
+                    response.status(200);
+                    return dconv.convertDepartmentList(result);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    response.status(404);
+                    return String.format("{msg:%s}", e.getSQLState());
+                }
             }
         });
 

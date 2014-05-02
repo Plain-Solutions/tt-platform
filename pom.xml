@@ -61,6 +61,11 @@
             <version>1.1.1</version>
         </dependency>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+        <dependency>
             <groupId>org.tt</groupId>
             <artifactId>tt-core</artifactId>
             <version>2.1.0</version>

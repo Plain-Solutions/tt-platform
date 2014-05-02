@@ -16,8 +16,14 @@
 
 package org.tt.platform.servlet;
 
-import org.tt.core.dm.AbstractDataManager;
-import org.tt.platform.factory.TTDataManagerFactory;
+import org.quartz.SchedulerException;
+import org.tt.core.dm.TTFactory;
+import org.tt.core.dm.TTUpdateManager;
+import org.tt.core.fetch.AbstractDataFetcher;
+import org.tt.core.sql.AbstractQueries;
+import org.tt.core.sql.AbstractSQLManager;
+import org.tt.core.sql.ex.NoSuchDepartmentException;
+import org.tt.core.sql.ex.NoSuchGroupException;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -25,8 +31,11 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -44,7 +53,6 @@ public class TomcatInit implements ServletContextListener {
             e.printStackTrace();
         }
 
-        TTDataManagerFactory ttdmf = TTDataManagerFactory.getInstance();
         Properties prop = new Properties();
 
         try {
@@ -53,35 +61,53 @@ public class TomcatInit implements ServletContextListener {
             e.printStackTrace();
         }
 
+        assert ds != null;
+        TTFactory ttf = TTFactory.getInstance();
+
         try {
-            assert ds != null;
+            Connection ttDBConnection = ds.getConnection();
 
-            TTDataManagerFactory.supplySQLManagerConnection(ds.getConnection(), prop.getProperty("sqlm"));
-            TTDataManagerFactory.supplyQueries(prop.getProperty("qrs"));
-            TTDataManagerFactory.supplyLDFCredential(prop.getProperty("ldf"));
-            TTDataManagerFactory.supplyDataFetcher(prop.getProperty("df"));
-            TTDataManagerFactory.supplyDataConverter(prop.getProperty("dconv"));
-            TTDataManagerFactory.supplyDataManager(prop.getProperty("dm"));
+            String sqlManagerImplementation = prop.getProperty("sqlm");
+            String queriesImplementation = prop.getProperty("qrs");
+            String dataFetcherImplementation = prop.getProperty("df");
+            String ldfCreds = prop.getProperty("ldf");
 
-            AbstractDataManager adm = ttdmf.produce();
+            AbstractSQLManager sqlm = (AbstractSQLManager) Class.forName(sqlManagerImplementation).
+                    getConstructor(Connection.class).newInstance(ttDBConnection);
+            AbstractQueries qrs = (AbstractQueries) Class.forName(queriesImplementation).
+                    getConstructor().newInstance();
+            AbstractDataFetcher df = (AbstractDataFetcher) Class.forName(dataFetcherImplementation).
+                    getConstructor(String.class).newInstance(ldfCreds);
 
-            if (prop.getProperty("firststart").equals("1")) {
-                prop.setProperty("firststart", "0");
-                System.out.println(adm.putDepartments().getMessage());
-                System.out.println(adm.putAllGroups().getMessage());
-                System.out.println(adm.putAllTT().getMessage());
-            }
-            System.out.println(adm.initUpdateJobs().getMessage());
-        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            ttf.setSQLManager(sqlm, qrs);
+            ttf.setDataFetcher(df);
+
+        } catch (SQLException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException |
+                InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        TTUpdateManager updm = ttf.produceUpdateManager();
+        try {
+            updm.initUpdateJobs();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        File lock = new File("tt.lock");
+
+        if (!lock.exists()) {
+            try {
+                System.out.println("No lock file found. Creating one.");
+                new FileOutputStream(lock).close();
+                updm.initFulfillment();
+            } catch (IOException | SQLException | NoSuchGroupException | NoSuchDepartmentException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
-
-
-
-
-
-
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
