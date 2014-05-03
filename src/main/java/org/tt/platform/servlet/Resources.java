@@ -157,4 +157,10 @@ public class Resources {
         }
     }
 
+    @GET
+    @Path("/loaderio-0f720aed82610a1c7e9893e9640aac51")
+    public String lodario() {
+        return "loaderio-0f720aed82610a1c7e9893e9640aac51";
+    }
+
 }
