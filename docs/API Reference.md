@@ -5,7 +5,7 @@ General
 -------
 
 Now all the requests can be called directly from `/`.
-So, the address is [api.ssutt.org].
+So, the address is [api.ssutt.org]().
 
 Basic Requests
 --------------
@@ -40,9 +40,15 @@ Response in case of success:
 ```
 
 ---
-### [GET] /department/< department_tag >/groups
+### [GET] /department/< department_tag >/groups/ < mode >
 
-Get list of group names for selected department.
+####mode = all
+
+Get list of **all available group names** for selected department.
+
+####mode = nonemp
+
+Get list of **all groups which have timetables** for selected department.
 
 **String group names now are supported**
 
@@ -78,7 +84,6 @@ Status code:
 * 200 - Success
 * 404 - Error
 
- 
 
 Response in case of success:
 
@@ -194,11 +199,8 @@ TT Platform has the unified response in case of some error occurs:
 
 Response in case of failure:
 ```json
-{
-	"module": < ModuleName >,
-	"message": <Some Error Information >
-}
+{ "msg": <Some Error Information > }
 ```
 
 ----
-### More methods coming soon..
+### More methods coming soon...

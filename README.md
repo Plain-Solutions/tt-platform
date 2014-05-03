@@ -6,23 +6,29 @@ General
 =======
 TT Platform is a connector between [TT Core Library](http://github.com/plain-solutions/tt-core) and the web interface. This module allows creating Java Servlets and database initialization via `HttpServlet`.
 
+Please refer [TT Core Library](http://github.com/plain-solutions/tt-core) README.
+
 Now Platform consist of three modules:
  
- * `TTDataManagerFactory` - module, which instance is created on Tomcat startup. It configures parameters for `AbstractDataManager`, converting it into `SSUDataManager` with all the SSU implementations of TT Core abstractions. Please refer [TT Core Library](http://github.com/plain-solutions/tt-ore) README.
- * `TomcatInit` - database and `DataManager` initialization module represented by `ServerContextListener`, so it runs on Tomcat startup as well. 
- *   ` Actions` - Java servlets created with Java Spark, providing access to TT Core features and returning them. All the data returned in web-friendly format - JSON.
+ * `TomcatInit` - database and `TTFactory` initialization module represented by `ServerContextListener`, so it runs on Tomcat startup as well. Here creates a factory with requires implementations of TT Core abstractions: DataFetcher, SQL manager and so on. Next, Update mechanism is configured. 
+ * `AbstractDataConverter` - moved back from TT Core - representing abstraction. In this package you can see `JSONConverter`, which is used to deliver data to clients.
+ *  `Resources` - Java servlet created with JAX-RS, delivered by Jersey, providing access to TT Core features and returning them. All the data returned in web-friendly format - JSON.
 
 Dependencies
 ============
 The whole library is built with Maven, but here is the brief list of main dependencies:
 
 * Java 7 (jdk>=1.7.0)
-* TT Core should be provided in local maven repository. (tt-core>=2.0.0-rc)
-* Java Spark Core (spark-core=1.1.1)
+* TT Core should be provided in local maven repository. (tt-core>=2.1.0)
+* Glassfish implementation of Jersey:
+     * jersey-container-servlet >=2.7
+     * jersey-client >=2.7
+* Google GSON
+     * gson >=2.2.4
 
 License
 =======
-TT Core Library is licensed under Apache License v2.
+TT Platform is licensed under Apache License v2.
 
 Authors
 =======
