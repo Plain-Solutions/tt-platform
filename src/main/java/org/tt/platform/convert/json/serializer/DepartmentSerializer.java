@@ -53,7 +53,6 @@ public class DepartmentSerializer implements JsonSerializer<Department> {
         JsonObject result = new JsonObject();
         JsonObject props = new JsonObject();
         props.addProperty("name", department.getName());
-        props.addProperty("msg", department.getMessage());
 
         result.add(department.getTag(), props);
         return result;

@@ -28,9 +28,18 @@ import java.util.List;
 public interface AbstractDataConverter {
     String convertDepartmentList(List<Department> departments);
 
+    String convertDepartmentMessage(String msg);
+
     String convertGroupList(List<Group> names);
 
     String convertAbstractList(List<String> list);
 
     String convertTT(TTEntity table);
+
+    String returnSQLErrMsg(String msg);
+
+    String returnNoSuchDepEx();
+
+    String returnNoSuchGrEx();
+
 }

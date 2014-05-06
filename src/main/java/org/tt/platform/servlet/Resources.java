@@ -60,7 +60,7 @@ public class Resources {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return "{msg: Invalid encoding}";
+            return "{errmsg: Invalid encoding}";
         }
 
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -74,15 +74,15 @@ public class Resources {
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return String.format("{msg:%s}", e.getSQLState());
+            return dconv.returnSQLErrMsg(e.getSQLState());
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return "{msg: No such department found}";
+            return dconv.returnNoSuchDepEx();
         } catch (NoSuchGroupException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return "{msg: No such group found}";
+            return dconv.returnNoSuchGrEx();
         }
     }
 
@@ -102,11 +102,11 @@ public class Resources {
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return "{msg: No such department found}";
+            return dconv.returnNoSuchDepEx();
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return String.format("{msg:%s}", e.getSQLState());
+            return dconv.returnSQLErrMsg(e.getSQLState());
         }
     }
 
@@ -122,18 +122,41 @@ public class Resources {
             List<Group> result = ttdm.getNonEmptyGroups(tag);
             response.setStatus(200);
             return dconv.convertGroupList(result);
-        } catch (NoSuchDepartmentException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return "{msg: No such department found}";
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return String.format("{msg:%s}", e.getSQLState());
+            return dconv.returnSQLErrMsg(e.getSQLState());
         } catch (NoSuchGroupException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return "{msg: No such group found}";
+            return dconv.returnNoSuchGrEx();
+        } catch (NoSuchDepartmentException e) {
+            e.printStackTrace();
+            response.setStatus(404);
+            return dconv.returnNoSuchDepEx();
+        }
+    }
+
+    @GET
+    @Path("/department/{tag}/msg")
+    @Produces("application/json;charset=UTF-8")
+    public String getDepartmentMessage(@PathParam("tag") String tag, @Context HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET");
+
+        TTDeliveryManager ttdm = ttf.produceDeliveryManager();
+        try {
+            String result = ttdm.getDepartmentMessage(tag);
+            response.setStatus(200);
+            return dconv.convertDepartmentMessage(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setStatus(404);
+            return dconv.returnSQLErrMsg(e.getSQLState());
+        } catch (NoSuchDepartmentException e) {
+            e.printStackTrace();
+            response.setStatus(404);
+            return dconv.returnNoSuchDepEx();
         }
     }
 
@@ -152,7 +175,7 @@ public class Resources {
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(404);
-            return String.format("{msg:%s}", e.getSQLState());
+            return dconv.returnSQLErrMsg(e.getSQLState());
         }
     }
 

@@ -47,6 +47,11 @@ public class JSONConverter implements AbstractDataConverter {
         return gsb.create().toJson(departments);
     }
 
+    @Override
+    public String convertDepartmentMessage(String msg) {
+        return gson.toJson(new Message(msg));
+    }
+
     public String convertGroupList(List<Group> names) {
         GsonBuilder gsb = new GsonBuilder();
         gsb.registerTypeAdapter(Group.class, new GroupListSerializer());
@@ -65,6 +70,37 @@ public class JSONConverter implements AbstractDataConverter {
         GsonBuilder gsb = new GsonBuilder();
         gsb.registerTypeAdapter(TTEntity.class, new TimeTableSerializer());
         return gsb.create().toJson(table);
+    }
+
+    @Override
+    public String returnSQLErrMsg(String msg) {
+        return gson.toJson(new ErrMessage(msg));
+    }
+
+    @Override
+    public String returnNoSuchDepEx() {
+        return gson.toJson(new ErrMessage("No such department found"));
+    }
+
+    @Override
+    public String returnNoSuchGrEx() {
+        return gson.toJson(new ErrMessage("No such group found"));
+    }
+
+    private class Message {
+        private String msg;
+
+        private Message(String msg) {
+            this.msg = msg;
+        }
+    }
+
+    private class ErrMessage {
+        private String errMsg;
+
+        private ErrMessage(String errMsg) {
+            this.errMsg = errMsg;
+        }
     }
 
 }
