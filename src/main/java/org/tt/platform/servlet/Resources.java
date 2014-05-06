@@ -54,8 +54,6 @@ public class Resources {
     @Path("/department/{tag}/group/{name}")
     @Produces("application/json;charset=UTF-8")
     public String getTT(@PathParam("tag") String tag, @PathParam("name") String name, @Context HttpServletResponse response) {
-        TTDeliveryManager ttdm = ttf.produceDeliveryManager();
-
         String groupName;
         try {
             groupName = URLDecoder.decode(name, "UTF-8");
@@ -68,6 +66,7 @@ public class Resources {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET");
 
+        TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
             TTEntity result = ttdm.getTT(tag, groupName);
             response.setStatus(200);
@@ -112,7 +111,7 @@ public class Resources {
     }
 
     @GET
-    @Path("/department/{tag}/groups/nemp")
+    @Path("/department/{tag}/groups/nonemp")
     @Produces("application/json;charset=UTF-8")
     public String getNonEmptyGroups(@PathParam("tag") String tag, @Context HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -158,9 +157,9 @@ public class Resources {
     }
 
     @GET
-    @Path("/loaderio-0f720aed82610a1c7e9893e9640aac51")
+    @Path("/loaderio-ccc6fd7b785e7be1002b0cfbbfbba736")
     public String lodario() {
-        return "loaderio-0f720aed82610a1c7e9893e9640aac51";
+        return "loaderio-ccc6fd7b785e7be1002b0cfbbfbba736";
     }
 
 }
