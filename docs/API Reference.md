@@ -5,7 +5,7 @@ General
 -------
 
 Now all the requests can be called directly from `/`.
-So, the address is [api.ssutt.org].
+So, the address is [api.ssutt.org:8080]() or [api-amst.ssutt.org:8080]().
 
 Basic Requests
 --------------
@@ -15,7 +15,7 @@ Common API for interacting with a service.
 ---
 ### [GET] /departments
 
-Get list of department tags, names and department messages, sorted by names.
+Get list of department tags and names, sorted by names.
 
 Status code:
 
@@ -27,22 +27,42 @@ Response in case of success:
 {
   "bf": {
     "name": "Биологический факультет",
-    "msg": ""
   },
   ...
   {
     "ff": {
       "name": "Физический факультет",
-      "msg": "Числитель\nФевраль - 10 - 16, 24 - 28\nМарт - 1, 2, 10 - 16, 24 - 30\nАпрель - 7 - 13, 21 - 27\nМай - 5 - 11, 19 - 25\n_________________________________________________________\nЗнаменатель\nФевраль - 6 - 9, 17 - 23\nМарт - 3 - 9, 17 - 23, 31\nАпрель - 1 - 6, 14 - 20, 28 - 30\nМай - 1 - 4, 12 - 18, 26 - 31"
     }
   }
   ...
 ```
 
 ---
-### [GET] /department/< department_tag >/groups
+### [GET] /department/< department_tag >/msg
+Get the department message by its tag.
+Status code:
 
-Get list of group names for selected department.
+* 200 - Success
+* 404 - Error
+
+Response in case of success:
+```json
+{
+	"msg" : "Crucial information!"	
+}
+  ...
+```
+
+---
+### [GET] /department/< department_tag >/groups/ < mode >
+
+####mode = all
+
+Get list of **all available group names** for selected department.
+
+####mode = nonemp
+
+Get list of **all groups which have timetables** for selected department.
 
 **String group names now are supported**
 
@@ -78,7 +98,6 @@ Status code:
 * 200 - Success
 * 404 - Error
 
- 
 
 Response in case of success:
 
@@ -194,11 +213,8 @@ TT Platform has the unified response in case of some error occurs:
 
 Response in case of failure:
 ```json
-{
-	"module": < ModuleName >,
-	"message": <Some Error Information >
-}
+{ "errmsg": <Some Error Information > }
 ```
 
 ----
-### More methods coming soon..
+### More methods coming soon...

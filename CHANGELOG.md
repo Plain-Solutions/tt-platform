@@ -2,6 +2,23 @@ Changelog
 =========
 <sub><sup>(Fix builds, which were pushed to master without release are in ***italics***)</sup></sub>
 
+###TT Platform 2.0
+
+* **Moved all data converting from TT Core to TT Platform**
+* **Moved from Java Spark to JAX-RS and Jersey**
+* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Reference.md)**
+* Added non-empty only group fetching (`/all` - all groups, `/nonemp` - for non-empty only)
+* Now requeries:
+	* `tt-core>=2.1.0`
+	* `jersey-container-servlet=2.7`
+	* `jersey-client=2.7`
+* All the routes are properly encoded with `@Produces("application/json;charset=UTF-8")`
+* Getting departments messages are moved to dedicated `/msg` route (refer API).
+* Updated format of getting errors.
+* Factory moved to TT Core. 
+
+=====
+
 ###TT Platform 1.2
 * Removed configuration file `tt.properties` from distribution as it includes private data.
 * Now requires `tt-core`***>=2.0.0-rc***
