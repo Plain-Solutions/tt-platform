@@ -13,6 +13,9 @@ Changelog
 	* `jersey-container-servlet=2.7`
 	* `jersey-client=2.7`
 * All the routes are properly encoded with `@Produces("application/json;charset=UTF-8")`
+* Getting departments messages are moved to dedicated `/msg` route (refer API).
+* Updated format of getting errors.
+* Factory moved to TT Core. 
 
 =====
 
