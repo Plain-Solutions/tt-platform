@@ -34,30 +34,7 @@ import java.util.List;
  * <li>4th: array of subgroup-teacher-location (subinfo) {subgroup, teacher, building, room} </li>
  * </ul>
  * sequence and info. It is sorted by days, then by sequence of lesson, then by parity (even<odd<full),
- * then by subgroups (lexicographically):
- * <code>
- * { <br>
- * "sat": [ <br>
- * {          <br>
- * "parity": "full", <br>
- * "sequence": 2,        <br>
- * "info": [                 <br>
- * {                           <br>
- * "activity": "practice",       <br>
- * "subject": "Физическая культура", <br>
- * "subinfo": [                          <br>
- * {                                       <br>
- * "subgroup": "",                           <br>
- * "teacher": "Вантеева Виктория Леонидовна",    <br>
- * "building": "12корпус Спортзал",                  <br>
- * "room": ""                                            <br>
- * }                                                           <br>
- * ]                                                             <br>
- * }                                                               <br>
- * ]                                                                 <br>
- * }                                                                   <br>
- * ]                                                                     <br>
- * }                                                                       <br>
+ * then by subgroups (lexicographically): see at <a href=https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Reference.md">API reference</a>
  * </code>
  *
  * @author Vlad Slepukhin
@@ -78,46 +55,35 @@ public class TimeTableSerializer implements JsonSerializer<TTEntity> {
     public JsonElement serialize(TTEntity tt, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonArray result = new JsonArray();
         List<TTDayEntity> days = tt.getTimetable();
-        //for is used instead of foreach for better performance due to high complexity O(n^4)
-        for (int i = 0; i < days.size(); i++) {
-            JsonObject day = new JsonObject();
-            List<TTLesson> lessonEntity = days.get(i).getLessons();
-            JsonArray lessons = new JsonArray();
-            for (int j = 0; j < lessonEntity.size(); j++) {
-                JsonObject entry = new JsonObject();
-                entry.addProperty("parity", lessonEntity.get(j).getParity());
-                entry.addProperty("sequence", lessonEntity.get(j).getSequence());
 
-                JsonArray subjInfo = new JsonArray();
-                List<TTLesson.TTLessonRecord> lrs = lessonEntity.get(j).getRecords();
-                for (int k = 0; k < lrs.size(); k++) {
-                    JsonObject lrEntry = new JsonObject();
-                    lrEntry.addProperty("activity", lrs.get(k).getActivity());
-                    lrEntry.addProperty("subject", lrs.get(k).getSubject());
+        for (TTDayEntity day: days) {
+            for (TTLesson dayLessons: day.getLessons()) {
+                JsonObject lesson = new JsonObject();
+                lesson.addProperty("day",day.getName());
+                lesson.addProperty("parity", dayLessons.getParity());
+                lesson.addProperty("sequence", dayLessons.getSequence());
 
 
-                    JsonArray creInfo = new JsonArray();
-                    List<TTLesson.TTClassRoomEntity> cres = lrs.get(k).getClassRoomEntities();
+                JsonArray res = new JsonArray();
+                for (TTLesson.TTLessonRecord subject: dayLessons.getRecords()) {
+                    JsonObject aSubj = new JsonObject();
+                    aSubj.addProperty("name", subject.getSubject());
+                    aSubj.addProperty("activity", subject.getActivity());
 
-
-                    for (int m = 0; m < cres.size(); m++) {
-                        JsonObject creEntry = new JsonObject();
-                        creEntry.addProperty("subgroup", cres.get(m).getSubgroup());
-                        creEntry.addProperty("teacher", cres.get(m).getTeacher());
-                        creEntry.addProperty("building", cres.get(m).getBuilding());
-                        creEntry.addProperty("room", cres.get(m).getRoom());
-                        creInfo.add(creEntry);
+                    JsonArray subgroups = new JsonArray();
+                    for (TTLesson.TTClassRoomEntity cre: subject.getClassRoomEntities()) {
+                        JsonObject data = new JsonObject();
+                        data.addProperty("subgroup", cre.getSubgroup());
+                        data.addProperty("teacher", cre.getTeacher());
+                        data.addProperty("location", cre.getBuilding());
+                        subgroups.add(data);
                     }
-                    lrEntry.add("subgroups", creInfo);
-                    subjInfo.add(lrEntry);
-
+                    aSubj.add("subgroups", subgroups);
+                    res.add(aSubj);
                 }
-                entry.add("info", subjInfo);
-
-                lessons.add(entry);
+                lesson.add("subject", res);
+                result.add(lesson);
             }
-            day.add(days.get(i).getName(), lessons);
-            result.add(day);
 
         }
 
