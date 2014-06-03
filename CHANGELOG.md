@@ -2,6 +2,12 @@ Changelog
 =========
 <sub><sup>(Fix builds, which were pushed to master without release are in ***italics***)</sup></sub>
 
+###TT Platform 2.1
+* Updated departments output (simplification).
+* Updated timetables output (simplification).
+* All or only full groups are now the parameter. 
+* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Reference.md)**
+
 ###TT Platform 2.0
 
 * **Moved all data converting from TT Core to TT Platform**

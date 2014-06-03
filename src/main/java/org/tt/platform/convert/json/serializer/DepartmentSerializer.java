@@ -16,22 +16,19 @@
 
 package org.tt.platform.convert.json.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import org.tt.core.entity.datafetcher.Department;
 
 import java.lang.reflect.Type;
 
 /**
  * DepartmentSerializer is override of standard GSON  <code>JsonSerializer</code> to properly create the list of departments.
- * It is now formatted as. We need a list inside "bf" or "gf" or so to be able extend some data about departments:
- * mails, phones, locations.
+ * It is now formatted as defined here:
  * <code>    <br>
- * {"bf": <br>
- * {"name":"Some department", "msg":"Department message"}, <br>
- * "gf":{"name":"Another department"}} <br>
+ * [
+ * <br>
+ * { "tag: "tag", "name":"Some department"}, <br>
+ * ] <br>
  * </code>
  *
  * @author Vlad Slepukhin
@@ -51,10 +48,9 @@ public class DepartmentSerializer implements JsonSerializer<Department> {
     @Override
     public JsonElement serialize(Department department, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject result = new JsonObject();
-        JsonObject props = new JsonObject();
-        props.addProperty("name", department.getName());
+        result.addProperty("tag", department.getTag());
+        result.addProperty("name", department.getName());
 
-        result.add(department.getTag(), props);
         return result;
     }
 }

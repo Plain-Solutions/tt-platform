@@ -25,10 +25,7 @@ import org.tt.core.sql.ex.NoSuchGroupException;
 import org.tt.platform.convert.json.JSONConverter;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
@@ -88,40 +85,25 @@ public class Resources {
 
 
     @GET
-    @Path("/department/{tag}/groups/all")
+    @Path("/department/{tag}/groups")
     @Produces("application/json;charset=UTF-8")
-    public String getAllGroups(@PathParam("tag") String tag, @Context HttpServletResponse response) {
+    public String getAllGroups(@PathParam("tag") String tag, @QueryParam("filled") int fullfill, @Context HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET");
 
         TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
-            List<Group> result = ttdm.getGroups(tag);
+            List<Group> result;
+            if (fullfill == 1)
+                result = ttdm.getNonEmptyGroups(tag);
+            else
+                result = ttdm.getGroups(tag);
             response.setStatus(200);
             return dconv.convertGroupList(result);
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
             response.setStatus(404);
             return dconv.returnNoSuchDepEx();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnSQLErrMsg(e.getSQLState());
-        }
-    }
-
-    @GET
-    @Path("/department/{tag}/groups/nonemp")
-    @Produces("application/json;charset=UTF-8")
-    public String getNonEmptyGroups(@PathParam("tag") String tag, @Context HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
-
-        TTDeliveryManager ttdm = ttf.produceDeliveryManager();
-        try {
-            List<Group> result = ttdm.getNonEmptyGroups(tag);
-            response.setStatus(200);
-            return dconv.convertGroupList(result);
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(404);
@@ -130,12 +112,9 @@ public class Resources {
             e.printStackTrace();
             response.setStatus(404);
             return dconv.returnNoSuchGrEx();
-        } catch (NoSuchDepartmentException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchDepEx();
         }
     }
+
 
     @GET
     @Path("/department/{tag}/msg")
