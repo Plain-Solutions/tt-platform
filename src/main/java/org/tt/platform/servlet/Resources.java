@@ -149,6 +149,7 @@ public class Resources {
         Response.ResponseBuilder r = Response.ok();
         r.header("Access-Control-Allow-Origin", "*");
         r.header("Access-Control-Allow-Methods", "GET");
+        r.type("application/json;charset=UTF-8");
 
         TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
