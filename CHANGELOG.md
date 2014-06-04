@@ -1,6 +1,10 @@
 Changelog
 =========
-<sub><sup>(Fix builds, which were pushed to master without release are in ***italics***)</sup></sub>
+<sub><sup>(Fix builds are in ***italics***)</sup></sub>
+
+###***TT Platform 2.1.1***
+
+* Fixes #7: proper status codes were not returned on error case.
 
 ###TT Platform 2.1
 * Updated departments output (simplification).

@@ -24,9 +24,7 @@ import org.tt.core.sql.ex.NoSuchDepartmentException;
 import org.tt.core.sql.ex.NoSuchGroupException;
 import org.tt.platform.convert.json.JSONConverter;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -49,47 +47,49 @@ public class Resources {
 
     @GET
     @Path("/department/{tag}/group/{name}")
-    @Produces("application/json;charset=UTF-8")
-    public String getTT(@PathParam("tag") String tag, @PathParam("name") String name, @Context HttpServletResponse response) {
+    public Response getTT(@PathParam("tag") String tag, @PathParam("name") String name) {
+        Response.ResponseBuilder r= Response.ok();
+        r.header("Access-Control-Allow-Origin", "*");
+        r.header("Access-Control-Allow-Methods", "GET");
+        r.type("application/json;charset=UTF-8");
+
         String groupName;
         try {
             groupName = URLDecoder.decode(name, "UTF-8");
+            TTDeliveryManager ttdm = ttf.produceDeliveryManager();
+            try {
+                TTEntity result = ttdm.getTT(tag, groupName);
+                r.status(Response.Status.OK);
+                r.entity(dconv.convertTT(result));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
+            } catch (NoSuchDepartmentException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnNoSuchDepEx());
+            } catch (NoSuchGroupException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnNoSuchGrEx());
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return "{errmsg: Invalid encoding}";
+            r.status(Response.Status.NOT_FOUND);
+            r.entity("{errmsg: Invalid encoding}");
         }
-
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
-
-        TTDeliveryManager ttdm = ttf.produceDeliveryManager();
-        try {
-            TTEntity result = ttdm.getTT(tag, groupName);
-            response.setStatus(200);
-            return dconv.convertTT(result);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnSQLErrMsg(e.getSQLState());
-        } catch (NoSuchDepartmentException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchDepEx();
-        } catch (NoSuchGroupException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchGrEx();
-        }
+        return r.build();
     }
 
 
     @GET
     @Path("/department/{tag}/groups")
-    @Produces("application/json;charset=UTF-8")
-    public String getAllGroups(@PathParam("tag") String tag, @QueryParam("filled") int fullfill, @Context HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+    public Response getAllGroups(@PathParam("tag") String tag, @QueryParam("filled") int fullfill) {
+        Response.ResponseBuilder r = Response.ok();
+        r.header("Access-Control-Allow-Origin", "*");
+        r.header("Access-Control-Allow-Methods", "GET");
+        r.type("application/json;charset=UTF-8");
 
         TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
@@ -98,70 +98,76 @@ public class Resources {
                 result = ttdm.getNonEmptyGroups(tag);
             else
                 result = ttdm.getGroups(tag);
-            response.setStatus(200);
-            return dconv.convertGroupList(result);
+            r.status(Response.Status.OK);
+            r.entity(dconv.convertGroupList(result));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchDepEx();
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnNoSuchDepEx());
         } catch (SQLException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnSQLErrMsg(e.getSQLState());
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchGroupException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchGrEx();
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnNoSuchGrEx());
         }
+        return r.build();
     }
 
 
     @GET
     @Path("/department/{tag}/msg")
-    @Produces("application/json;charset=UTF-8")
-    public String getDepartmentMessage(@PathParam("tag") String tag, @Context HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+    public Response getDepartmentMessage(@PathParam("tag") String tag) {
+        Response.ResponseBuilder r = Response.ok();
+        r.header("Access-Control-Allow-Origin", "*");
+        r.header("Access-Control-Allow-Methods", "GET");
+        r.type("application/json;charset=UTF-8");
 
         TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
             String result = ttdm.getDepartmentMessage(tag);
-            response.setStatus(200);
-            return dconv.convertDepartmentMessage(result);
+            r.status(Response.Status.OK);
+            r.entity(dconv.convertDepartmentMessage(result));
         } catch (SQLException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnSQLErrMsg(e.getSQLState());
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnNoSuchDepEx();
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnNoSuchDepEx());
         }
+
+        return r.build();
     }
 
     @GET
     @Path("/departments")
-    @Produces("application/json;charset=UTF-8")
-    public String getDepartments(@Context HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+    public Response getDepartments() {
+        Response.ResponseBuilder r = Response.ok();
+        r.header("Access-Control-Allow-Origin", "*");
+        r.header("Access-Control-Allow-Methods", "GET");
 
         TTDeliveryManager ttdm = ttf.produceDeliveryManager();
         try {
             List<Department> result = ttdm.getDepartments();
-            response.setStatus(200);
-            return dconv.convertDepartmentList(result);
+            r.status(Response.Status.OK);
+            r.entity(dconv.convertDepartmentList(result));
+
         } catch (SQLException e) {
             e.printStackTrace();
-            response.setStatus(404);
-            return dconv.returnSQLErrMsg(e.getSQLState());
-        }
+            r.status(Response.Status.NOT_FOUND);
+            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
+       }
+       return r.build();
     }
 
     @GET
     @Path("/loaderio-ccc6fd7b785e7be1002b0cfbbfbba736")
-    public String lodario() {
-        return "loaderio-ccc6fd7b785e7be1002b0cfbbfbba736";
+    public Response lodario() {
+        return Response.ok("loaderio-ccc6fd7b785e7be1002b0cfbbfbba736").build();
     }
 
 }
