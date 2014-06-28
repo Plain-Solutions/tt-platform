@@ -25,6 +25,7 @@ import org.tt.core.entity.db.TTEntity;
 import org.tt.platform.convert.AbstractDataConverter;
 import org.tt.platform.convert.json.serializer.DepartmentSerializer;
 import org.tt.platform.convert.json.serializer.GroupListSerializer;
+import org.tt.platform.convert.json.serializer.PlainerTimeTableSerializer;
 import org.tt.platform.convert.json.serializer.TimeTableSerializer;
 
 
@@ -69,6 +70,13 @@ public class JSONConverter implements AbstractDataConverter {
     public String convertTT(TTEntity table) {
         GsonBuilder gsb = new GsonBuilder();
         gsb.registerTypeAdapter(TTEntity.class, new TimeTableSerializer());
+        return gsb.create().toJson(table);
+    }
+
+    @Override
+    public String convertTTPlainer(TTEntity table) {
+        GsonBuilder gsb = new GsonBuilder();
+        gsb.registerTypeAdapter(TTEntity.class, new PlainerTimeTableSerializer());
         return gsb.create().toJson(table);
     }
 
