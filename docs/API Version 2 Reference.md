@@ -125,6 +125,6 @@ With two lessons on the same day and sequence:
       }
     ]
   },
-  ....
+  ...
   ]
 ```
