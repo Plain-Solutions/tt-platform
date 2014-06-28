@@ -36,6 +36,8 @@ public interface AbstractDataConverter {
 
     String convertTT(TTEntity table);
 
+    String convertTTPlainer (TTEntity table);
+
     String returnSQLErrMsg(String msg);
 
     String returnNoSuchDepEx();

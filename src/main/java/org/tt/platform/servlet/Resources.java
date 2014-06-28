@@ -22,6 +22,7 @@ import org.tt.core.entity.datafetcher.Group;
 import org.tt.core.entity.db.TTEntity;
 import org.tt.core.sql.ex.NoSuchDepartmentException;
 import org.tt.core.sql.ex.NoSuchGroupException;
+import org.tt.platform.convert.AbstractDataConverter;
 import org.tt.platform.convert.json.JSONConverter;
 
 import javax.ws.rs.*;
@@ -37,7 +38,7 @@ import java.util.List;
 @Path("/")
 public class Resources {
     final TTFactory ttf = TTFactory.getInstance();
-    final JSONConverter dconv = new JSONConverter();
+    final AbstractDataConverter dconv = new JSONConverter();
 
     @GET
     @Produces("text/plain")
@@ -46,7 +47,44 @@ public class Resources {
     }
 
     @GET
-    @Path("/department/{tag}/group/{name}")
+    @Path("/2/department/{tag}/group/{name}")
+    public Response getPlainerTT(@PathParam("tag") String tag, @PathParam("name") String name) {
+        Response.ResponseBuilder r= Response.ok();
+        r.header("Access-Control-Allow-Origin", "*");
+        r.header("Access-Control-Allow-Methods", "GET");
+        r.type("application/json;charset=UTF-8");
+
+        String groupName;
+        try {
+            groupName = URLDecoder.decode(name, "UTF-8");
+            TTDeliveryManager ttdm = ttf.produceDeliveryManager();
+            try {
+                TTEntity result = ttdm.getTT(tag, groupName);
+                r.status(Response.Status.OK);
+                r.entity(dconv.convertTTPlainer(result));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
+            } catch (NoSuchDepartmentException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnNoSuchDepEx());
+            } catch (NoSuchGroupException e) {
+                e.printStackTrace();
+                r.status(Response.Status.NOT_FOUND);
+                r.entity(dconv.returnNoSuchGrEx());
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            r.status(Response.Status.NOT_FOUND);
+            r.entity("{errmsg: Invalid encoding}");
+        }
+        return r.build();
+    }
+
+    @GET
+    @Path("/1/department/{tag}/group/{name}")
     public Response getTT(@PathParam("tag") String tag, @PathParam("name") String name) {
         Response.ResponseBuilder r= Response.ok();
         r.header("Access-Control-Allow-Origin", "*");
@@ -84,7 +122,7 @@ public class Resources {
 
 
     @GET
-    @Path("/department/{tag}/groups")
+    @Path("/1/department/{tag}/groups")
     public Response getAllGroups(@PathParam("tag") String tag, @QueryParam("filled") int fullfill) {
         Response.ResponseBuilder r = Response.ok();
         r.header("Access-Control-Allow-Origin", "*");
@@ -118,7 +156,7 @@ public class Resources {
 
 
     @GET
-    @Path("/department/{tag}/msg")
+    @Path("/1/department/{tag}/msg")
     public Response getDepartmentMessage(@PathParam("tag") String tag) {
         Response.ResponseBuilder r = Response.ok();
         r.header("Access-Control-Allow-Origin", "*");
@@ -144,7 +182,7 @@ public class Resources {
     }
 
     @GET
-    @Path("/departments")
+    @Path("/1/departments")
     public Response getDepartments() {
         Response.ResponseBuilder r = Response.ok();
         r.header("Access-Control-Allow-Origin", "*");

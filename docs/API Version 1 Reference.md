@@ -1,4 +1,4 @@
-SSU TimeTable API Reference
+SSU TimeTable API Version 1 Reference
 ==========================
 
 General
@@ -7,13 +7,11 @@ General
 Now all the requests can be called directly from `/`.
 So, the address is [api.ssutt.org:8080]() or [api-amst.ssutt.org:8080]().
 
-Basic Requests
---------------
+__Version 2 is available [here](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Version%202%20Reference.md).__
 
-Common API for interacting with a service.
 
 ---
-### [GET] /departments
+### [GET] /1/departments
 
 Get list of department tags and names, sorted by names.
 
@@ -39,7 +37,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /department/< department_tag >/msg
+### [GET] /1/department/< department_tag >/msg
 Get the department message by its tag.
 Status code:
 
@@ -55,7 +53,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /department/< department_tag >/groups/?filled=<1|0>
+### [GET] /1/department/< department_tag >/groups/?filled=<1|0>
 
 
 ####filled = 1
@@ -83,7 +81,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /department/< department_tag >/group/< group_name >
+### [GET] /1/department/< department_tag >/group/< group_name >
 
 Get timetable of group from department. Results are sorted by days, then by sequence of lessons, subgroup names (lexigraphically) and finally by parity.
 
@@ -101,8 +99,6 @@ Status code:
 
 
 Response in case of success:
-
-**simpliest:**
 
 ```json
 [
@@ -153,6 +149,3 @@ Response in case of failure:
 ```json
 { "errmsg": <Some Error Information > }
 ```
-
-----
-### More methods coming soon...

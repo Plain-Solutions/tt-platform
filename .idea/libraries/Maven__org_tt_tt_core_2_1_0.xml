@@ -8,6 +8,8 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/tt/tt-core/2.1.0/tt-core-2.1.0-sources.jar!/" />
+      <root url="file://$PROJECT_DIR$/../tt-core/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../tt-core/src/test/java" />
     </SOURCES>
   </library>
 </component>
