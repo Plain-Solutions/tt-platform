@@ -19,7 +19,7 @@ Dependencies
 The whole library is built with Maven, but here is the brief list of main dependencies:
 
 * Java 7 (jdk>=1.7.0)
-* TT Core should be provided in local maven repository. (tt-core>=2.1.0)
+* TT Core should be provided in local maven repository. (tt-core>=2.1.1)
 * Glassfish implementation of Jersey:
      * jersey-container-servlet >=2.7
      * jersey-client >=2.7
