@@ -2,6 +2,23 @@ Changelog
 =========
 <sub><sup>(Fix builds are in ***italics***)</sup></sub>
 
+###***TT Platform 2.1.4***
+
+* Fixes lessons placement on the same day and sequence. See updated [reference](https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Version%202%20Reference.md)
+* Now requires `tt-core>=2.1.1`
+
+###TT Platfrom 2.1.3
+
+* Introduced versioning. This will be the last update, breaking compatibility with previous versions as all the new features will be introduced with subsequent number.
+* New Timetable request with slightly simpler structure and more digits than words.
+* See more about refreshed version 1 [here](https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Version%201%20Reference.md) and brand new version 2 [there](https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Version%202%20Reference.md).
+
+
+###***TT Platform 2.1.2***
+
+* Encoding errors fix
+
+
 ###***TT Platform 2.1.1***
 
 * Fixes #7: proper status codes were not returned on error case.
@@ -10,13 +27,13 @@ Changelog
 * Updated departments output (simplification).
 * Updated timetables output (simplification).
 * All or only full groups are now the parameter. 
-* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Reference.md)**
+* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Version%201%20Reference.md)**
 
 ###TT Platform 2.0
 
 * **Moved all data converting from TT Core to TT Platform**
 * **Moved from Java Spark to JAX-RS and Jersey**
-* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Reference.md)**
+* **Updated API. See [reference](https://github.com/Plain-Solutions/tt-platform/blob/master/docs/API%20Version%201%20Reference.md)**
 * Added non-empty only group fetching (`/all` - all groups, `/nonemp` - for non-empty only)
 * Now requeries:
 	* `tt-core>=2.1.0`

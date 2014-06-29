@@ -104,14 +104,8 @@ With two lessons on the same day and sequence:
             "location": "12корпус ауд.303"
           }
         ]
-      }
-    ]
-  },
-  {
-    "day": 2,
-    "sequence": 2,
-    "subject": [
-      {
+      },
+       {
         "name": "Информатика и программирование",
         "activity": "practice",
         "parity": 1,

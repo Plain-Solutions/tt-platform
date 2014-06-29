@@ -33,7 +33,7 @@ public class PlainerTimeTableSerializer implements JsonSerializer<TTEntity> {
         List<TTDayEntity> days = ttEntity.getTimetable();
 
         for (TTDayEntity day: days) {
-            for (TTLesson dayLessons: day.getLessons()) {
+            for (TTLesson dayLessons: adjustLessons(day.getLessons())) {
                 JsonObject lesson = new JsonObject();
                 lesson.addProperty("day", convertDayToNum(day.getName()));
                 lesson.addProperty("sequence", dayLessons.getSequence());
@@ -43,7 +43,8 @@ public class PlainerTimeTableSerializer implements JsonSerializer<TTEntity> {
                     JsonObject aSubj = new JsonObject();
                     aSubj.addProperty("name", subject.getSubject());
                     aSubj.addProperty("activity", subject.getActivity());
-                    aSubj.addProperty("parity", convertParityToNum(dayLessons.getParity()));
+
+                    aSubj.addProperty("parity", (subject.getParity() != null)?convertParityToNum(subject.getParity()):convertParityToNum(dayLessons.getParity()));
 
                     JsonArray subgroups = new JsonArray();
                     for (TTLesson.TTClassRoomEntity cre: subject.getClassRoomEntities()) {
@@ -62,6 +63,27 @@ public class PlainerTimeTableSerializer implements JsonSerializer<TTEntity> {
         }
 
         return result;
+    }
+
+    private List<TTLesson> adjustLessons(List<TTLesson> lessons) {
+        int size = lessons.size()-1;
+        for (int i=0; i<size; i++) {
+            TTLesson firstLesson = lessons.get(i);
+            TTLesson comparedLesson = lessons.get(i+1);
+
+            if (firstLesson.getSequence() == comparedLesson.getSequence()) {
+                for (TTLesson.TTLessonRecord rec: comparedLesson.getRecords()) {
+                    rec.setParity(comparedLesson.getParity());
+                    firstLesson.append(rec);
+                }
+
+
+                lessons.remove(comparedLesson);
+            }
+            size = lessons.size()-1;
+
+        }
+        return lessons;
     }
 
     private int convertDayToNum(String day) {
