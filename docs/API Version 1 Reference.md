@@ -53,7 +53,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /1/department/< department_tag >/groups/?filled=<1|0>
+### [GET] /1/department/< department_tag >/groups?filled=<1|0>
 
 
 ####filled = 1
