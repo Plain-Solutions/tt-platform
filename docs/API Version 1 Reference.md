@@ -7,7 +7,7 @@ General
 Now all the requests can be called directly from `/`.
 So, the address is [api.ssutt.org:8080]() or [api-amst.ssutt.org:8080]().
 
-__Version 2 is available [here](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Version%202%20Reference.md).__
+__Version 2 is available [he	re](https://github.com/Plain-Solutions/tt-platform/blob/dev/docs/API%20Version%202%20Reference.md).__
 
 
 ---
@@ -53,7 +53,7 @@ Response in case of success:
 ```
 
 ---
-### [GET] /1/department/< department_tag >/groups/?filled=<1|0>
+### [GET] /1/department/< department_tag >/groups?filled=<1|0>
 
 
 ####filled = 1

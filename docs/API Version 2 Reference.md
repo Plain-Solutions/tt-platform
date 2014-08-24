@@ -21,7 +21,7 @@ It has this structure:
 Days are numbered as for now from 0 - Monday to 5 - Saturday.
 Parities are:
 
-* 0 - nominator
+* 0 - numerator
 * 1 - denominator
 * 2 - full (both)
 
