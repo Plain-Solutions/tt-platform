@@ -154,6 +154,11 @@ public class Resources {
         return r.build();
     }
 
+    @GET
+    @Path("/2/department/{tag}/groups")
+    public Response getAllGroupsForward(@PathParam("tag") String tag, @QueryParam("filled") int fullfill) {
+        return this.getAllGroups(tag, fullfill);
+    }
 
     @GET
     @Path("/1/department/{tag}/msg")
@@ -182,6 +187,12 @@ public class Resources {
     }
 
     @GET
+    @Path("/2/department/{tag}/msg")
+    public Response getDepartmentMessageForward(@PathParam("tag") String tag) {
+        return this.getDepartmentMessage(tag);
+    }
+
+    @GET
     @Path("/1/departments")
     public Response getDepartments() {
         Response.ResponseBuilder r = Response.ok();
@@ -204,9 +215,10 @@ public class Resources {
     }
 
     @GET
-    @Path("/loaderio-ccc6fd7b785e7be1002b0cfbbfbba736")
-    public Response lodario() {
-        return Response.ok("loaderio-ccc6fd7b785e7be1002b0cfbbfbba736").build();
+    @Path("/2/departments")
+    public Response getDepartmentsForward() {
+        return this.getDepartments();
     }
 
 }
+
