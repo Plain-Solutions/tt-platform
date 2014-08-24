@@ -45,11 +45,6 @@ public class Resources {
     final int ResponseNoSuchGroupCode = 399;
     final int ResponseUnsupportedEncodingCode = 509;
 
-    @GET
-    @Produces("text/plain")
-    public Response goTODevPage() throws URISyntaxException {
-        return Response.seeOther(new URI("http://ssutt.org/developers")).build();
-    }
 
     @GET
     @Path("/2/department/{tag}/group/{name}")
