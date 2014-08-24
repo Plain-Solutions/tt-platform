@@ -40,6 +40,11 @@ public class Resources {
     final TTFactory ttf = TTFactory.getInstance();
     final AbstractDataConverter dconv = new JSONConverter();
 
+    final int ResponseSQLErrorCode = 209;
+    final int ResponseNoSuchDepartmentCode = 309;
+    final int ResponseNoSuchGroupCode = 399;
+    final int ResponseUnsupportedEncodingCode = 509;
+
     @GET
     @Produces("text/plain")
     public Response goTODevPage() throws URISyntaxException {
@@ -64,20 +69,20 @@ public class Resources {
                 r.entity(dconv.convertTTPlainer(result));
             } catch (SQLException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseSQLErrorCode);
                 r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
             } catch (NoSuchDepartmentException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchDepartmentCode);
                 r.entity(dconv.returnNoSuchDepEx());
             } catch (NoSuchGroupException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchGroupCode);
                 r.entity(dconv.returnNoSuchGrEx());
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseUnsupportedEncodingCode);
             r.entity("{errmsg: Invalid encoding}");
         }
         return r.build();
@@ -101,20 +106,20 @@ public class Resources {
                 r.entity(dconv.convertTT(result));
             } catch (SQLException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseSQLErrorCode);
                 r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
             } catch (NoSuchDepartmentException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchDepartmentCode);
                 r.entity(dconv.returnNoSuchDepEx());
             } catch (NoSuchGroupException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchGroupCode);
                 r.entity(dconv.returnNoSuchGrEx());
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseUnsupportedEncodingCode);
             r.entity("{errmsg: Invalid encoding}");
         }
         return r.build();
@@ -140,15 +145,15 @@ public class Resources {
             r.entity(dconv.convertGroupList(result));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchDepartmentCode);
             r.entity(dconv.returnNoSuchDepEx());
         } catch (SQLException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseSQLErrorCode);
             r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchGroupException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchGroupCode);
             r.entity(dconv.returnNoSuchGrEx());
         }
         return r.build();
@@ -173,14 +178,14 @@ public class Resources {
             String result = ttdm.getDepartmentMessage(tag);
             r.status(Response.Status.OK);
             r.entity(dconv.convertDepartmentMessage(result));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
-            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchDepartmentCode);
             r.entity(dconv.returnNoSuchDepEx());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            r.status(this.ResponseSQLErrorCode);
+            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         }
 
         return r.build();
@@ -208,7 +213,7 @@ public class Resources {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseSQLErrorCode);
             r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
        }
        return r.build();
