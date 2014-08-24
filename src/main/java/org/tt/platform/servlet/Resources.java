@@ -25,11 +25,12 @@ import org.tt.core.sql.ex.NoSuchGroupException;
 import org.tt.platform.convert.AbstractDataConverter;
 import org.tt.platform.convert.json.JSONConverter;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.List;
