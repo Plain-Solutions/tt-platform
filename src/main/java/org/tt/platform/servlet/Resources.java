@@ -25,11 +25,12 @@ import org.tt.core.sql.ex.NoSuchGroupException;
 import org.tt.platform.convert.AbstractDataConverter;
 import org.tt.platform.convert.json.JSONConverter;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,11 +41,11 @@ public class Resources {
     final TTFactory ttf = TTFactory.getInstance();
     final AbstractDataConverter dconv = new JSONConverter();
 
-    @GET
-    @Produces("text/plain")
-    public Response goTODevPage() throws URISyntaxException {
-        return Response.seeOther(new URI("http://ssutt.org/developers")).build();
-    }
+    final int ResponseSQLErrorCode = 209;
+    final int ResponseNoSuchDepartmentCode = 309;
+    final int ResponseNoSuchGroupCode = 399;
+    final int ResponseUnsupportedEncodingCode = 509;
+
 
     @GET
     @Path("/2/department/{tag}/group/{name}")
@@ -64,20 +65,20 @@ public class Resources {
                 r.entity(dconv.convertTTPlainer(result));
             } catch (SQLException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseSQLErrorCode);
                 r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
             } catch (NoSuchDepartmentException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchDepartmentCode);
                 r.entity(dconv.returnNoSuchDepEx());
             } catch (NoSuchGroupException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchGroupCode);
                 r.entity(dconv.returnNoSuchGrEx());
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseUnsupportedEncodingCode);
             r.entity("{errmsg: Invalid encoding}");
         }
         return r.build();
@@ -101,20 +102,20 @@ public class Resources {
                 r.entity(dconv.convertTT(result));
             } catch (SQLException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseSQLErrorCode);
                 r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
             } catch (NoSuchDepartmentException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchDepartmentCode);
                 r.entity(dconv.returnNoSuchDepEx());
             } catch (NoSuchGroupException e) {
                 e.printStackTrace();
-                r.status(Response.Status.NOT_FOUND);
+                r.status(this.ResponseNoSuchGroupCode);
                 r.entity(dconv.returnNoSuchGrEx());
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseUnsupportedEncodingCode);
             r.entity("{errmsg: Invalid encoding}");
         }
         return r.build();
@@ -140,20 +141,25 @@ public class Resources {
             r.entity(dconv.convertGroupList(result));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchDepartmentCode);
             r.entity(dconv.returnNoSuchDepEx());
         } catch (SQLException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseSQLErrorCode);
             r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchGroupException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchGroupCode);
             r.entity(dconv.returnNoSuchGrEx());
         }
         return r.build();
     }
 
+    @GET
+    @Path("/2/department/{tag}/groups")
+    public Response getAllGroupsForward(@PathParam("tag") String tag, @QueryParam("filled") int fullfill) {
+        return this.getAllGroups(tag, fullfill);
+    }
 
     @GET
     @Path("/1/department/{tag}/msg")
@@ -168,17 +174,23 @@ public class Resources {
             String result = ttdm.getDepartmentMessage(tag);
             r.status(Response.Status.OK);
             r.entity(dconv.convertDepartmentMessage(result));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
-            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         } catch (NoSuchDepartmentException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseNoSuchDepartmentCode);
             r.entity(dconv.returnNoSuchDepEx());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            r.status(this.ResponseSQLErrorCode);
+            r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
         }
 
         return r.build();
+    }
+
+    @GET
+    @Path("/2/department/{tag}/msg")
+    public Response getDepartmentMessageForward(@PathParam("tag") String tag) {
+        return this.getDepartmentMessage(tag);
     }
 
     @GET
@@ -197,16 +209,17 @@ public class Resources {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            r.status(Response.Status.NOT_FOUND);
+            r.status(this.ResponseSQLErrorCode);
             r.entity(dconv.returnSQLErrMsg(e.getSQLState()));
        }
        return r.build();
     }
 
     @GET
-    @Path("/loaderio-ccc6fd7b785e7be1002b0cfbbfbba736")
-    public Response lodario() {
-        return Response.ok("loaderio-ccc6fd7b785e7be1002b0cfbbfbba736").build();
+    @Path("/2/departments")
+    public Response getDepartmentsForward() {
+        return this.getDepartments();
     }
 
 }
+
